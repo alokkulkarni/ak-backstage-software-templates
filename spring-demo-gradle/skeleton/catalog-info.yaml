@@ -10,8 +10,8 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     sonarqube.org/project-key: ${{values.artifact_id}}
     backstage.io/code-coverage: enabled #scm-only
-    backstage.io/source-location: ${{values.destination.url}}
-    backstage.io/managed-by-location: ${{values.destination.url}}
+    backstage.io/source-location: '${{values.destination.url}}'
+    backstage.io/managed-by-location: '${{values.destination.url}}'
     jenkins.io/job-full-name: '${{values.component_id | dump}}/${{values.artifact_id}}'
 spec:
   type: service
