@@ -8,7 +8,12 @@ metadata:
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
     backstage.io/techdocs-ref: dir:.
+    sonarqube.org/project-key: ${{values.artifact_id}}
+    backstage.io/code-coverage: enabled #scm-only
 spec:
   type: service
   lifecycle: experimental
-  owner: ${{values.owner | dump}}   
+  owner: ${{values.owner | dump}}
+  system: ${{values.destination.owner + "/" + values.destination.repo}}
+  providesApis:
+    - ${{values.artifact_id}}
