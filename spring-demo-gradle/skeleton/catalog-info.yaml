@@ -16,9 +16,5 @@ spec:
   lifecycle: experimental
   owner: ${{values.owner | dump}}
   system: ${{values.destination.owner + "/" + values.destination.repo}}
-  definition:
-    location: ${{values.location}}
-    type: openapi
-    format: yaml
   providesApis:
-    - ${{values.artifact_id}}
+    - ${{values.artifact_id}} 
