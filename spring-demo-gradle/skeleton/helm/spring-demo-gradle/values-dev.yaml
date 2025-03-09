@@ -1,0 +1,27 @@
+# Development environment specific values
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+env:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "dev"
+  - name: LOG_LEVEL
+    value: "DEBUG"
+
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/tags: Environment=Dev,Project=SpringDemoGradle
+    alb.ingress.kubernetes.io/group.name: dev-ingress
