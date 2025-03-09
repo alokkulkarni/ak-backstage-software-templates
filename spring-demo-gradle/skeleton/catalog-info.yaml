@@ -10,7 +10,7 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     sonarqube.org/project-key: ${{values.artifact_id}}
     backstage.io/code-coverage: enabled #scm-only
-    jenkins.io/job-full-name: 'folder-name/project-name,folder-name/project-name'
+    jenkins.io/job-full-name: '${{values.component_id | dump}}/${{values.artifact_id}}'
 spec:
   type: service
   lifecycle: experimental
