@@ -18,3 +18,5 @@ spec:
   system: ${{values.destination.owner + "/" + values.destination.repo}}
   providesApis:
     - ${{values.artifact_id}} 
+  providedApis:
+    - ${{values.artifact_id}}
