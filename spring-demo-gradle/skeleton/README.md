@@ -1,4 +1,4 @@
-# Spring Boot Demo Application with Gradle
+# ${{values.artifact_id}} Application 
 
 This is a sample Spring Boot application configured to use Gradle build system, with support for running on Amazon EKS with AWS ALB Ingress Controller.
 
@@ -13,8 +13,8 @@ This is a sample Spring Boot application configured to use Gradle build system, 
 ## Application Structure
 
 - `src/main/java` - Java source code
-  - `SpringDemoGradleApplication.java` - Main application class
-  - `controller/DemoController.java` - REST endpoints
+  - `Application.java` - Main application class
+  - `controller/HealthController.java` - REST endpoints
 - `src/main/resources`
   - `application.yml` - Application configuration
 - `k8s/` - Kubernetes deployment configurations
@@ -58,12 +58,12 @@ This is a sample Spring Boot application configured to use Gradle build system, 
 
 3. Check the deployment status:
    ```bash
-   kubectl get pods -l app=spring-demo-gradle
+   kubectl get pods -l app=${{values.artifact_id}}
    ```
 
 4. Get the ALB URL:
    ```bash
-   kubectl get ingress spring-demo-gradle
+   kubectl get ingress  
    ```
 
 ## Gradle Tasks
@@ -100,7 +100,7 @@ The project includes several custom Gradle tasks:
 ### View application logs:
 ```bash
 # Get pod name
-POD_NAME=$(kubectl get pods -l app=spring-demo-gradle -o jsonpath='{.items[0].metadata.name}')
+POD_NAME=$(kubectl get pods -l app=${{values.artifact_id}} -o jsonpath='{.items[0].metadata.name}')
 
 # Stream logs
 kubectl logs -f $POD_NAME
@@ -108,7 +108,7 @@ kubectl logs -f $POD_NAME
 
 ### Check pod status:
 ```bash
-kubectl describe pod -l app=spring-demo-gradle
+kubectl describe pod -l app=${{values.artifact_id}}
 ```
 
 ### View metrics (via Spring Actuator):
@@ -157,7 +157,7 @@ grype dir:build/sbom/ -o table
 The application includes a Helm chart for simplified deployment and management.
 
 ### Chart Structure
-- `helm/spring-demo-gradle/`
+- `helm/${{values.artifact_id}}/`
   - `Chart.yaml` - Chart metadata and version information
   - `values.yaml` - Default configuration values
   - `values-dev.yaml` - Development environment specific values
@@ -166,17 +166,17 @@ The application includes a Helm chart for simplified deployment and management.
 1. Review and modify values in `values-dev.yaml` as needed
 2. Install the chart:
    ```bash
-   helm upgrade --install spring-demo-gradle helm/spring-demo-gradle \
+   helm upgrade --install ${{values.artifact_id}} helm/${{values.artifact_id}} \
      --namespace dev \
      --create-namespace \
-     -f helm/spring-demo-gradle/values-dev.yaml \
+     -f helm/${{values.artifact_id}}/values-dev.yaml \
      --set sbom.enabled=true
    ```
 
 3. Verify the installation:
    ```bash
    helm list -n dev
-   kubectl get all -n dev -l app.kubernetes.io/name=spring-demo-gradle
+   kubectl get all -n dev -l app.kubernetes.io/name=${{values.artifact_id}}
    ```
 
 ### Helm Chart Configuration
@@ -237,12 +237,12 @@ This Gradle-based project offers the same functionality as the Maven-based sprin
 
 1. If pods are not starting:
    ```bash
-   kubectl describe pod -l app=spring-demo-gradle
+   kubectl describe pod -l app=${{values.artifact_id}}
    ```
 
 2. If ingress is not working:
    ```bash
-   kubectl describe ingress spring-demo-gradle
+   kubectl describe ingress ${{values.artifact_id}}
    ```
 
 3. Gradle build issues:
@@ -257,7 +257,7 @@ This Gradle-based project offers the same functionality as the Maven-based sprin
    ls -la build/sbom/
    
    # Verify SBOM is in container
-   kubectl exec $(kubectl get pod -l app=spring-demo-gradle -o jsonpath="{.items[0].metadata.name}") -- ls -la /app/sbom/
+   kubectl exec $(kubectl get pod -l app=${{values.artifact_id}} -o jsonpath="{.items[0].metadata.name}") -- ls -la /app/sbom/
    ```
 
 ## Security Considerations
