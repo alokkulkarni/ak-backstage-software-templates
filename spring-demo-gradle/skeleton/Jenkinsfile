@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_REGISTRY = '${{values.destination.owner}}'  // Replace with your registry
+        DOCKER_REGISTRY = 'https://docker.io/${{values.destination.owner}}'  // Replace with your registry
         IMAGE_NAME = '${{values.artifact_id}}'
         IMAGE_TAG = "${BUILD_NUMBER}"
         SONAR_PROJECT_KEY = '${{values.artifact_id}}'
@@ -25,33 +25,43 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh './gradlew clean build -x test'
-            }   
+                script {
+                    def workspace = pwd()
+                    sh "cd ${workspace} && ./gradlew clean build -x test"
+                }
+            }
         }
         stage('Test') {
             steps {
-                sh '''
-                    ./gradlew test jacocoTestReport
-                    ./gradlew pitest
-                '''
-                junit '**/build/test-results/test/*.xml'
-                jacoco(
-                    execPattern: 'build/jacoco/test.exec',
-                    classPattern: 'build/classes/java/main',
-                    sourcePattern: 'src/main/java',
-                    exclusionPattern: 'src/test/*'
-                )
+                script {
+                    def workspace = pwd()
+                    sh """
+                        cd ${workspace}
+                        ./gradlew test jacocoTestReport
+                        ./gradlew pitest
+                    """
+                    junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
+                    jacoco(
+                        execPattern: "${workspace}/build/jacoco/test.exec",
+                        classPattern: "${workspace}/build/classes/java/main",
+                        sourcePattern: "${workspace}/src/main/java",
+                        exclusionPattern: "${workspace}/src/test/*"
+                    )
+                }
             }
         }
         stage('Generate SBOM') {
             steps {
-                sh '''
-                    ./gradlew cyclonedxBom
-                    mkdir -p sbom-artifacts
-                    cp build/sbom/* sbom-artifacts/
-                '''
-                // Archive SBOM as Jenkins artifact
-                archiveArtifacts artifacts: 'sbom-artifacts/*', fingerprint: true
+                script {
+                    def workspace = pwd()
+                    sh """
+                        cd ${workspace}
+                        ./gradlew cyclonedxBom
+                        mkdir -p sbom-artifacts
+                        cp build/sbom/* sbom-artifacts/
+                    """
+                    archiveArtifacts artifacts: 'sbom-artifacts/*', fingerprint: true
+                }
             }
         }
         stage('Analyze SBOM for Vulnerabilities') {
@@ -102,13 +112,13 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", 'docker-credentials') {  // Configure Docker credentials in Jenkins
-                        def customImage = docker.build("${{values.destination.owner}}/${{values.artifact_id}}:${IMAGE_TAG}")
+                    docker.withRegistry("${DOCKER_REGISTRY}", 'docker-credentials') {  // Configure Docker credentials in Jenkins
+                        def customImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
                         // Add SBOM attestation to the image if cosign is available
                         sh '''
                             if command -v cosign &> /dev/null; then
                               echo "Attaching SBOM attestation to image..."
-                              cosign attach sbom --sbom sbom-artifacts/bom.json ${{values.destination.owner}}/${{values.artifact_id}}:${IMAGE_TAG}
+                              cosign attach sbom --sbom sbom-artifacts/bom.json ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
                             else
                               echo "Cosign not available, skipping SBOM attestation"
                             fi
@@ -122,9 +132,11 @@ pipeline {
         stage('Container Security Scan') {
             steps {
                 script {
-                    def scanScript = "${WORKSPACE}/terraform_code/scripts/container-scan.sh"
+                    def workspace = pwd()
+                    def scanScript = "${workspace}/scripts/container-scan.sh"
                     sh """
-                        ${scanScript} -i "${{values.destination.owner}}/${{values.artifact_id}}:${IMAGE_TAG}" \
+                        cd ${workspace}
+                        ${scanScript} -i "${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}" \
                                     -b "${SCAN_S3_BUCKET}" \
                                     -f "json" \
                                     -s "HIGH,CRITICAL" \
@@ -135,16 +147,20 @@ pipeline {
         }
         stage('Deploy to EKS') {
             steps {
-                withKubeConfig([credentialsId: 'eks-kubeconfig']) {
-                    sh """
-                        helm upgrade --install ${{values.artifact_id}} helm/${{values.artifact_id}} \
-                            --namespace dev \
-                            --create-namespace \
-                            --set image.repository=${{values.destination.owner}}/${{values.artifact_id}} \
-                            --set image.tag=${IMAGE_TAG} \
-                            --set sbom.enabled=true \
-                            -f helm/${{values.artifact_id}}/values-dev.yaml
-                    """
+                script {
+                    def workspace = pwd()
+                    withKubeConfig([credentialsId: 'eks-kubeconfig']) {
+                        sh """
+                            cd ${workspace}
+                            helm upgrade --install ${{values.artifact_id}} helm/${{values.artifact_id}} \
+                                --namespace dev \
+                                --create-namespace \
+                                --set image.repository=${DOCKER_REGISTRY}/${IMAGE_NAME} \
+                                --set image.tag=${IMAGE_TAG} \
+                                --set sbom.enabled=true \
+                                -f helm/${{values.artifact_id}}/values-dev.yaml
+                        """
+                    }
                 }
             }
         }
