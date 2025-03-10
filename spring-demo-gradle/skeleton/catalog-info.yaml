@@ -9,7 +9,7 @@ metadata:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
     backstage.io/techdocs-ref: dir:.
     sonarqube.org/project-key: ${{values.artifact_id}}
-    backstage.io/code-coverage: enabled #scm-only
+    backstage.io/code-coverage: scm-only
     backstage.io/source-location: '${{values.destination.repo.url}}'
     backstage.io/managed-by-location: '${{values.destination.repo.url}}'
     jenkins.io/job-full-name: "${{values.artifact_id}}"
