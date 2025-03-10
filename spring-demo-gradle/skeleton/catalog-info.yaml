@@ -12,7 +12,7 @@ metadata:
     backstage.io/code-coverage: enabled #scm-only
     backstage.io/source-location: '${{values.destination.url}}'
     backstage.io/managed-by-location: '${{values.destination.url}}'
-    jenkins.io/job-full-name: '${{values.component_id | dump}}/${{values.artifact_id}}'
+    jenkins.io/job-full-name: ${{values.destination.owner}}/${{values.artifact_id}}
 spec:
   type: service
   lifecycle: experimental
