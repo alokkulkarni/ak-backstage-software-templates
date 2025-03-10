@@ -58,7 +58,7 @@ jacocoTestCoverageVerification {
 }
 
 pitest {
-    targetClasses = ['com.example.springdemogradle.*']
+    targetClasses = ['com.example.${{values.java_package_name}}.*']
     threads = 4
     outputFormats = ['HTML', 'XML']
     timestampedReports = false
