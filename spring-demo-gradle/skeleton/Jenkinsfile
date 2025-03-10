@@ -19,7 +19,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: env.GITHUB_BRANCH,
-                    url: "https://github.com/+${{values.destination.owner}}+"/"+${{values.artifact_id}}.git,
+                    url: "https://github.com/${{values.destination.owner}}/${{values.artifact_id}}.git",
                     credentialsId: 'github-app'  // Configure this in Jenkins
             }
         }
