@@ -4,11 +4,11 @@ pipeline {
         DOCKER_REGISTRY = 'https://docker.io/${{values.destination.owner}}'  // Replace with your registry
         IMAGE_NAME = '${{values.artifact_id}}'
         IMAGE_TAG = "${BUILD_NUMBER}"
-        SONAR_PROJECT_KEY = '${{values.artifact_id}}'
-        AWS_REGION = 'eu-west-2'  // Adjust as needed
-        S3_BUCKET = '${{values.artifact_id}}'  // Replace with your S3 bucket
-        KUBECONFIG = credentials('eks-kubeconfig')  // Jenkins credential ID for kubeconfig
-        SCAN_S3_BUCKET = 'your-security-reports-bucket'  // Add this line
+        // SONAR_PROJECT_KEY = '${{values.artifact_id}}'
+        // AWS_REGION = 'eu-west-2'  // Adjust as needed
+        // S3_BUCKET = '${{values.artifact_id}}'  // Replace with your S3 bucket
+        // KUBECONFIG = credentials('eks-kubeconfig')  // Jenkins credential ID for kubeconfig
+        // SCAN_S3_BUCKET = 'your-security-reports-bucket'  // Add this line
         GITHUB_REPO = '${{values.destination.owner}}/${{values.artifact_id}}'  // Replace with your GitHub org/repo
         GITHUB_BRANCH = 'master'  // Replace with your default branch
     }
@@ -18,38 +18,42 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: env.GITHUB_BRANCH,
-                    url: "https://github.com/${{values.destination.owner}}/${{values.artifact_id}}.git",
-                    credentialsId: 'github-app'  // Configure this in Jenkins
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "*/${GITHUB_BRANCH}"]],
+                    extensions: [],
+                    userRemoteConfigs: [[
+                        credentialsId: 'github-app',
+                        url: "https://github.com/alokkulkarni/paymentsapi.git"
+                    ]]
+                ])
             }
         }
         stage('Build') {
             steps {
-                script {
-                    def workspace = pwd()
-                    sh "cd ${workspace} && ./gradlew clean build -x test"
-                }
+                sh 'chmod +x ./gradlew'
+                sh './gradlew clean build -x test'
             }
         }
-        stage('Test') {
-            steps {
-                script {
-                    def workspace = pwd()
-                    sh """
-                        cd ${workspace}
-                        ./gradlew test jacocoTestReport
-                        ./gradlew pitest
-                    """
-                    junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
-                    jacoco(
-                        execPattern: "${workspace}/build/jacoco/test.exec",
-                        classPattern: "${workspace}/build/classes/java/main",
-                        sourcePattern: "${workspace}/src/main/java",
-                        exclusionPattern: "${workspace}/src/test/*"
-                    )
-                }
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             def workspace = pwd()
+        //             sh """
+        //                 cd ${workspace}
+        //                 ./gradlew test jacocoTestReport
+        //                 ./gradlew pitest
+        //             """
+        //             junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
+        //             jacoco(
+        //                 execPattern: "${workspace}/build/jacoco/test.exec",
+        //                 classPattern: "${workspace}/build/classes/java/main",
+        //                 sourcePattern: "${workspace}/src/main/java",
+        //                 exclusionPattern: "${workspace}/src/test/*"
+        //             )
+        //         }
+        //     }
+        // }
         stage('Generate SBOM') {
             steps {
                 script {
@@ -67,48 +71,49 @@ pipeline {
         stage('Analyze SBOM for Vulnerabilities') {
             steps {
                 // Use Grype or other tool to scan SBOM for vulnerabilities
-                sh '''
-                    if command -v grype &> /dev/null; then
-                      echo "Scanning dependencies for vulnerabilities..."
-                      mkdir -p vulnerability-reports
-                      grype dir:sbom-artifacts -o json > vulnerability-reports/grype-report.json
-                      grype dir:sbom-artifacts -o table > vulnerability-reports/grype-report.txt
-                    else
-                      echo "Grype not available, skipping vulnerability scan"
-                      mkdir -p vulnerability-reports
-                      echo "Vulnerability scan skipped - Grype not installed" > vulnerability-reports/scan-skipped.txt
-                    fi
-                '''
+                grypeScan autoInstall: true, repName: 'grypeReport_${JOB_NAME}_${BUILD_NUMBER}.txt', scanDest: 'dir:sbom-artifacts'
+                // sh '''
+                //     if command -v grype &> /dev/null; then
+                //       echo "Scanning dependencies for vulnerabilities..."
+                //       mkdir -p vulnerability-reports
+                //       grype dir:sbom-artifacts -o json > vulnerability-reports/grype-report.json
+                //       grype dir:sbom-artifacts -o table > vulnerability-reports/grype-report.txt
+                //     else
+                //       echo "Grype not available, skipping vulnerability scan"
+                //       mkdir -p vulnerability-reports
+                //       echo "Vulnerability scan skipped - Grype not installed" > vulnerability-reports/scan-skipped.txt
+                //     fi
+                // '''
                 // Archive vulnerability reports
                 archiveArtifacts artifacts: 'vulnerability-reports/*', fingerprint: true
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {  // Configure this in Jenkins
-                    sh """
-                        ./gradlew sonar \
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.java.binaries=build/classes/java/main \
-                        -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \
-                        -Dsonar.pitest.reportsDirectory=build/reports/pitest
-                    """
-                }
-            }
-        }
-        stage('Export Reports to S3') {
-            steps {
-                withAWS(region: "${AWS_REGION}", credentials: 'aws-credentials') {  // Configure AWS credentials in Jenkins
-                    sh """
-                        aws s3 cp build/test-results/test s3://${S3_BUCKET}/${BUILD_NUMBER}/test-reports/ --recursive
-                        aws s3 cp build/reports/jacoco s3://${S3_BUCKET}/${BUILD_NUMBER}/coverage-reports/ --recursive
-                        aws s3 cp build/reports/pitest s3://${S3_BUCKET}/${BUILD_NUMBER}/mutation-reports/ --recursive
-                        aws s3 cp sbom-artifacts s3://${S3_BUCKET}/${BUILD_NUMBER}/sbom/ --recursive
-                        aws s3 cp vulnerability-reports s3://${S3_BUCKET}/${BUILD_NUMBER}/vulnerability-reports/ --recursive
-                    """
-                }
-            }
-        }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('SonarQube') {  // Configure this in Jenkins
+        //             sh """
+        //                 ./gradlew sonar \
+        //                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+        //                 -Dsonar.java.binaries=build/classes/java/main \
+        //                 -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \
+        //                 -Dsonar.pitest.reportsDirectory=build/reports/pitest
+        //             """
+        //         }
+        //     }
+        // }
+        // stage('Export Reports to S3') {
+        //     steps {
+        //         withAWS(region: "${AWS_REGION}", credentials: 'aws-credentials') {  // Configure AWS credentials in Jenkins
+        //             sh """
+        //                 aws s3 cp build/test-results/test s3://${S3_BUCKET}/${BUILD_NUMBER}/test-reports/ --recursive
+        //                 aws s3 cp build/reports/jacoco s3://${S3_BUCKET}/${BUILD_NUMBER}/coverage-reports/ --recursive
+        //                 aws s3 cp build/reports/pitest s3://${S3_BUCKET}/${BUILD_NUMBER}/mutation-reports/ --recursive
+        //                 aws s3 cp sbom-artifacts s3://${S3_BUCKET}/${BUILD_NUMBER}/sbom/ --recursive
+        //                 aws s3 cp vulnerability-reports s3://${S3_BUCKET}/${BUILD_NUMBER}/vulnerability-reports/ --recursive
+        //             """
+        //         }
+        //     }
+        // }
         stage('Build and Push Docker Image') {
             steps {
                 script {
@@ -145,29 +150,33 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to EKS') {
-            steps {
-                script {
-                    def workspace = pwd()
-                    withKubeConfig([credentialsId: 'eks-kubeconfig']) {
-                        sh """
-                            cd ${workspace}
-                            helm upgrade --install ${{values.artifact_id}} helm/${{values.artifact_id}} \
-                                --namespace dev \
-                                --create-namespace \
-                                --set image.repository=${DOCKER_REGISTRY}/${IMAGE_NAME} \
-                                --set image.tag=${IMAGE_TAG} \
-                                --set sbom.enabled=true \
-                                -f helm/${{values.artifact_id}}/values-dev.yaml
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Deploy to EKS') {
+        //     steps {
+        //         script {
+        //             def workspace = pwd()
+        //             withKubeConfig([credentialsId: 'eks-kubeconfig']) {
+        //                 sh """
+        //                     cd ${workspace}
+        //                     helm upgrade --install ${{values.artifact_id}} helm/${{values.artifact_id}} \
+        //                         --namespace dev \
+        //                         --create-namespace \
+        //                         --set image.repository=${DOCKER_REGISTRY}/${IMAGE_NAME} \
+        //                         --set image.tag=${IMAGE_TAG} \
+        //                         --set sbom.enabled=true \
+        //                         -f helm/${{values.artifact_id}}/values-dev.yaml
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
     }
     post {
         always {
-            cleanWs()
+            script {
+                if (getContext(hudson.FilePath)) {
+                    deleteDir()
+                }
+            }
         }
         success {
             echo 'Pipeline completed successfully!'
