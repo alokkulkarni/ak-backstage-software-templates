@@ -1,4 +1,4 @@
-package test.java.com.example.springdemogradle.controller;
+package test.java.com.example.${{values.java_package_name}}.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

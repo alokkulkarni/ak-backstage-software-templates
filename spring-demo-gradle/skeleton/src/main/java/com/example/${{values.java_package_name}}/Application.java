@@ -1,4 +1,4 @@
-package main.java.com.example.springdemogradle;
+package main.java.com.example.${{values.java_package_name}};
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
