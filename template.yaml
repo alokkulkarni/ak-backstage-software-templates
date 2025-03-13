@@ -6,7 +6,7 @@ metadata:
 spec:
   type: url
   targets:
-    - templates/spring-demo-gradle/template.yaml
+    - templates/springboot-backend-gradle/template.yaml
     # - templates/github/nodejs-backend/template.yaml
     # - templates/gitlab/python-backend/template.yaml
     # - templates/azure/dotnet-frontend/template.yaml
