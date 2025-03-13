@@ -3,7 +3,7 @@ kind: Component
 metadata:
   name: templates
   annotations:
-    github.com/project-slug: alokkulkarni/templates
+    github.com/project-slug: alokkulkarni/ak-backstage-software-templates
 spec:
   type: other
   lifecycle: unknown
