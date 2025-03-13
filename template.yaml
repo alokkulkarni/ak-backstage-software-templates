@@ -1,8 +1,8 @@
 apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
-  name: rhdh-collection
-  description: A collection of Example Software Templates for Red Hat Developer Hub
+  name: ak-collection
+  description: A collection of Software Templates for Backsatge
 spec:
   type: url
   targets:
