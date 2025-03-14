@@ -13,6 +13,7 @@ metadata:
     # backstage.io/source-location: '${{values.destination.repo.url}}'
     # backstage.io/managed-by-location: '${{values.destination.repo.url}}'
     jenkins.io/job-full-name: "${{values.artifact_id}}"
+    argocd/app-name: ${{values.artifact_id}}
 spec:
   type: service
   lifecycle: experimental
