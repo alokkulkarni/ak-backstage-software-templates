@@ -1,0 +1,12 @@
+site_name: "Create Frontend Plugin Template"
+site_description: "User documentation for creating a frontend plugin"
+
+nav:
+  - Introduction: index.md
+  - Consuming APIs in your UI Components: features/api.md
+  - Enforcing Access Controls in your Frontend Plugin: features/rbac.md
+  - Integrating Theme in your UI Components: features/theme.md
+  - Dynamic Plugin Enablement: features/dynamic-plugin.md
+
+plugins:
+  - techdocs-core
