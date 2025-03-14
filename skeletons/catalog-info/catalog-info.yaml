@@ -34,6 +34,15 @@ metadata:
     {%- elif values.sourceControl == "dev.azure.com" %}
     dev.azure.com/project-repo: ${{ values.orgName }}/${{ values.repoName }}
     {%- endif %}
+    sonarqube.org/project-key: ${{ values.repoName }}
+    backstage.io/code-coverage: scm-only
+    # backstage.io/source-location: '${{values.destination.repo.url}}'
+    # backstage.io/managed-by-location: '${{values.destination.repo.url}}'
+    jenkins.io/job-full-name: "${{ values.repoName }}"
+    jira.com/project-key: ${{ values.repoName }} # The key of the Jira project to track for this entity, or Comma-separated list of Jira project keys optionally prefixed with the instance name
+    # jira.com/components: component,component,component # Jira component name separated with a comma. The Roadie Backstage Jira Plugin Jira annotation `/component` is also supported here by default
+    # jira.com/filter-ids: 12345,67890 # Jira filter id separated with a comma
+    jira.com/incoming-issues-status: Incoming # The name of the status for incoming issues in Jira. Default: New
 spec:
   type: ${{ values.applicationType }}
   {%- if values.system %}
