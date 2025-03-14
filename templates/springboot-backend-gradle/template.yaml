@@ -9,7 +9,8 @@ metadata:
     - java
     - grpc
 spec:
-  owner: service@example.com
+  owner: ak
+  system: ak-idp
   type: service
 
   parameters:
