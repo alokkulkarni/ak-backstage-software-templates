@@ -9,8 +9,8 @@ metadata:
     - java
     - maven
 spec:
-  owner: janus-authors
-  system: janus-idp
+  owner: ak
+  system: ak-idp
   type: service
 
   parameters:
