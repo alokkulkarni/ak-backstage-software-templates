@@ -9,8 +9,8 @@ metadata:
     - catalog
     - register
 spec:
-  owner: janus-authors
-  system: janus-idp
+  owner: ak
+  system: ak-idp
   type: service
 
   parameters:
