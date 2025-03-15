@@ -8,7 +8,7 @@ on:
 env:
   IMAGE_NAME: ${{ github.event.repository.name }}
   IMAGE_TAGS: latest ${{ github.sha }}
-  IMAGE_REGISTRY: quay.io
+  IMAGE_REGISTRY: dockerhub.io
   IMAGE_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
   USERNAME: ${{ secrets.REGISTRY_USERNAME }}
   PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
