@@ -23,5 +23,5 @@ env:
 
 ingress:
   annotations:
-    alb.ingress.kubernetes.io/tags: Environment=Dev,Project=SpringDemoGradle
+    alb.ingress.kubernetes.io/tags: Environment=Dev,Project=${{values.artifact_id}}
     alb.ingress.kubernetes.io/group.name: dev-ingress
