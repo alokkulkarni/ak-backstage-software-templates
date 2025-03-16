@@ -64,8 +64,8 @@ spec:
         groupId:
           title: Group ID
           type: string
-          default: io.janus
-          description: Maven Group ID eg (io.janus)
+          default: com.alok
+          description: Maven Group ID eg (com.alok)
         artifactId:
           title: Artifact ID
           type: string
@@ -108,17 +108,17 @@ spec:
                 imageRepository:
                   title: Select a registry
                   type: string
-                  default: quay.io
+                  default: dockerhub.io
                   enum:
-                    - quay.io
+                    - dockerhub.io
                     - image-registry.openshift-image-registry.svc:5000
                   enumNames:
-                    - Quay
+                    - Dockerhub
                     - Internal OpenShift Registry
                 imageUrl:
                   title: Image URL
                   type: string
-                  description: The Quay.io or OpenShift Image URL <REGISTRY>/<IMAGE_URL>/<REPO_NAME>
+                  description: The dockerhub.io or OpenShift Image URL <REGISTRY>/<IMAGE_URL>/<REPO_NAME>
                 namespace:
                   title: Namespace
                   type: string
