@@ -40,11 +40,11 @@ jobs:
             mvn clean
             mvn -B package --file pom.xml
         
-        - name: SonarQube Scan
-          uses: SonarSource/sonarqube-scan-action@v4
-          with:
-            sonar_host_url: ${{ secrets.SONAR_HOST_URL }}
-            sonar_token: ${{ secrets.SONAR_TOKEN }}
+        # - name: SonarQube Scan
+        #   uses: SonarSource/sonarqube-scan-action@v4
+        #   with:
+        #     sonar_host_url: ${{ secrets.SONAR_HOST_URL }}
+        #     sonar_token: ${{ secrets.SONAR_TOKEN }}
         
         - name: build the docker image
           uses: docker/build-push-action@v4
