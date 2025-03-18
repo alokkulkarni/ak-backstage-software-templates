@@ -62,7 +62,7 @@ jobs:
       - name: Create ArgoCD Application
         run: |
           # Create ArgoCD application for Spring Boot if not exists
-          if ! argocd app list | grep -q "springboot-app"; then
+          if ! argocd app list | grep -q "${{ values.repoName }}"; then
             argocd app create springboot-app \
               --repo https://${{ values.sourceControl }}/${{ values.orgName }}/${{ values.repoName }}.git \
               --path manifests/argocd/app.yaml \
