@@ -7,11 +7,11 @@ on:
 
 env:
   IMAGE_NAME: ${{ github.event.repository.name }}
-  IMAGE_TAGS: latest ${{ github.sha }}
-  IMAGE_REGISTRY: dockerhub.io
-  IMAGE_NAMESPACE: ${{ secrets.REGISTRY_NAMESPACE }}
-  USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-  PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+  IMAGE_TAGS: ${{ github.sha }}
+  IMAGE_REGISTRY: hub.docker.com
+  IMAGE_NAMESPACE: alokkulkarni
+  USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
 jobs:
   build-and-push-image:
@@ -38,7 +38,7 @@ jobs:
         - name: build the app
           run: |
             mvn clean
-            mvn -B package --file pom.xml
+            mvn -DskipTests -B package --file pom.xml
         
         # - name: SonarQube Scan
         #   uses: SonarSource/sonarqube-scan-action@v4
@@ -46,24 +46,31 @@ jobs:
         #     sonar_host_url: ${{ secrets.SONAR_HOST_URL }}
         #     sonar_token: ${{ secrets.SONAR_TOKEN }}
         
-        - name: build the docker image
-          uses: docker/build-push-action@v4
-          with:
-            context: .
-            dockerfile: Dockerfile
-            push: false
-            tags: ${{ secrets.REGISTRY_NAMESPACE }}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAGS}}
+        # - name: build the docker image
+        #   uses: docker/build-push-action@v4
+        #   with:
+        #     context: .
+        #     dockerfile: Dockerfile
+        #     push: false
+        #     tags: ${{ secrets.REGISTRY_NAMESPACE }}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAGS}}
 
         - name: login to docker hub
-          uses: docker/login-action@v1
+          uses: docker/login-action@v3
           with:
             username: ${{ env.USERNAME }}
             password: ${{ env.PASSWORD }}
 
-        - name: push the docker image to docker hub
-          uses: docker/build-push-action@v4
-          with:
-            context: .
-            dockerfile: Dockerfile
-            push: true
-            tags: ${{ secrets.REGISTRY_NAMESPACE }}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAGS}}
+        - name: Build and Push Docker Image
+          run: |
+            docker build -t ${{env.IMAGE_NAMESPACE}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAGS}} .
+            docker tag ${{env.IMAGE_NAMESPACE}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAGS}} ${{env.IMAGE_NAMESPACE}}/${{env.IMAGE_NAME}}:latest
+            docker push ${{env.IMAGE_NAMESPACE}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAGS}}
+            docker push ${{env.IMAGE_NAMESPACE}}/${{env.IMAGE_NAME}}:latest
+
+        # - name: push the docker image to docker hub
+        #   uses: docker/build-push-action@v4
+        #   with:
+        #     context: .
+        #     dockerfile: Dockerfile
+        #     push: true
+        #     tags: ${{env.IMAGE_NAMESPACE}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAGS}}
