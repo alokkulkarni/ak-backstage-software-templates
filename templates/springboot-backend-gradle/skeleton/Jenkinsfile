@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_REGISTRY = 'https://docker.io/${{values.destination.owner}}'  // Replace with your registry
+        DOCKER_REGISTRY = 'https://hub.docker.com/${{values.destination.owner}}'  // Replace with your registry
         IMAGE_NAME = '${{values.artifact_id}}'
         IMAGE_TAG = "${BUILD_NUMBER}"
         // SONAR_PROJECT_KEY = '${{values.artifact_id}}'

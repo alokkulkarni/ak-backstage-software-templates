@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ${{ values.artifact_id }}
+  labels:
+    app: ${{ values.artifact_id }}
+    app.kubernetes.io/component: backstage
+    backstage.io/kubernetes-id: ${{ values.artifact_id }}
+spec:
+  ports:
+    - name: http-8086
+      port: 8086
+      protocol: TCP
+      targetPort: 8086
+  selector:
+    app: ${{ values.artifact_id }}
