@@ -50,32 +50,32 @@ jobs:
 
       - name: Login to ArgoCD
         run: |
-          argocd login localhost:8080 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
+          argocd login localhost:8080 --username admin --password ${{secrets.ARGOCD_PASSWORD}} --insecure
 
       - name: Create ArgoCD Project (if not exists)
         run: |
           # Create ArgoCD project if not already present
-          if ! argocd proj list | grep -q "${{ values.repoName }}"; then
-            argocd proj create ${{ values.repoName }} --description "Spring Boot app project" --dest-namespace default --dest-server https://kubernetes.default.svc
+          if ! argocd proj list | grep -q "${{ values.artifact_id }}"; then
+            argocd proj create ${{values.artifact_id}} --description "Spring Boot app project" --dest-namespace default --dest-server https://kubernetes.default.svc
           fi
 
       - name: Create ArgoCD Application
         run: |
           # Create ArgoCD application for Spring Boot if not exists
-          if ! argocd app list | grep -q "${{ values.repoName }}"; then
+          if ! argocd app list | grep -q "${{values.artifact_id}}"; then
             argocd app create springboot-app \
-              --repo https://github.com/${{ values.destination.owner }}/${{ values.artifact_id }}.git \
+              --repo https://github.com/${{values.destination.owner}}/${{values.artifact_id}}.git \
               --path manifests/base \
               --dest-server https://kubernetes.default.svc \
               --dest-namespace default \
               --sync-policy automated \
-              --project ${{ values.repoName }}
+              --project ${{values.artifact_id}}
           fi
 
       - name: Sync ArgoCD Application
         run: |
           # Sync ArgoCD app to deploy the app to MicroK8s
-          argocd app sync ${{ values.repoName }}
+          argocd app sync ${{values.artifact_id}}
 
       - name: Verify Deployment in MicroK8s
         run: |
