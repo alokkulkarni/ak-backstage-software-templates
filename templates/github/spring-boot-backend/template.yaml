@@ -151,9 +151,9 @@ spec:
       name: Generating the CI Component
       action: fetch:template
       input:
-        url: ${{ parameters.ci }}
-        copyWithoutTemplating:
-          - .github/workflows/
+        url: ../../../skeletons/github-actions/
+        # copyWithoutTemplating:
+        #   - .github/workflows/
         values:
           orgName: ${{ parameters.orgName }}
           repoName: ${{ parameters.repoName }}
