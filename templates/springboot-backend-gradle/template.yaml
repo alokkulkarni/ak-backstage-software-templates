@@ -89,8 +89,7 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
-        copyWithoutRender:
-          - .github/workflows/*
+        copyWithoutRender: []
         values:
           component_id: ${{ parameters.component_id }}
           artifact_id: ${{ parameters.artifact_id }}
@@ -104,7 +103,7 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
     - id: copy-workflows
-      name: Copy GitHub Actions Workflows
+      name: Copy and Replace GitHub Actions Workflows
       action: fetch:template
       input:
         url: ./skeleton/.github/workflows
