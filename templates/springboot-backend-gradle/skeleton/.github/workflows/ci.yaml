@@ -24,12 +24,15 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ '{' }}{ java_version }${{ '}' }}
 
-      - name: Cache Gradle Packages
+      - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
-          path: ~/.gradle/caches
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-${{ runner.os }}
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}
 
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
