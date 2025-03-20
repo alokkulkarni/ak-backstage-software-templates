@@ -104,10 +104,11 @@ spec:
 
     - id: copy-workflows
       name: Copy and Replace GitHub Actions Workflows
-      action: fetch:template
+      action: fs:copy
       input:
-        url: ./skeleton/.github/workflows
-        targetPath: .github/workflows
+        files:
+          - from: ./skeleton/.github/workflows
+            to: ./.github/workflows
         values:
           component_id: ${{ parameters.component_id }}
           artifact_id: ${{ parameters.artifact_id }}
