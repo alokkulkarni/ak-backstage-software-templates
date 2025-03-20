@@ -105,7 +105,7 @@ spec:
 
     - id: copy-workflows
       name: Copy GitHub Actions Workflows
-      action: fs:template
+      action: fetch:template
       input:
         targetPath: ${{ parameters.repoUrl | parseRepoUrl }}/.github/workflows
         values:
