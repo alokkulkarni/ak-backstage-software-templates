@@ -108,7 +108,7 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton/.github/workflows
-        targetPath: ${{ parameters.repoUrl | parseRepoUrl }}/.github/workflows
+        targetPath: .github/workflows
         values:
           component_id: ${{ parameters.component_id }}
           artifact_id: ${{ parameters.artifact_id }}
