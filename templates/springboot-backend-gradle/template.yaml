@@ -89,6 +89,8 @@ spec:
       action: fetch:template
       input:
         url: ./skeleton
+        copyWithoutTemplating:
+          - "./github/workflows"
         values:
           component_id: ${{ parameters.component_id }}
           artifact_id: ${{ parameters.artifact_id }}
