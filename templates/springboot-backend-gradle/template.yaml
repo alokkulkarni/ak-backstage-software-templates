@@ -103,18 +103,18 @@ spec:
           source_control: ${{ parameters.source_control }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
-    - id: copy-workflows
-      name: Copy GitHub Actions Workflows
-      action: fetch:template
-      input:
-        targetPath: ${{ parameters.repoUrl | parseRepoUrl }}/.github/workflows
-        values:
-          component_id: ${{ parameters.component_id }}
-          artifact_id: ${{ parameters.artifact_id }}
-          org_owner: ${{ parameters.org_owner }}
-          java_package_name: ${{ parameters.java_package_name }}
-          port: ${{ parameters.port }}
-          java_version: ${{ parameters.java_version }}
+    # - id: copy-workflows
+    #   name: Copy GitHub Actions Workflows
+    #   action: fetch:template
+    #   input:
+    #     targetPath: ${{ parameters.repoUrl | parseRepoUrl }}/.github/workflows
+    #     values:
+    #       component_id: ${{ parameters.component_id }}
+    #       artifact_id: ${{ parameters.artifact_id }}
+    #       org_owner: ${{ parameters.org_owner }}
+    #       java_package_name: ${{ parameters.java_package_name }}
+    #       port: ${{ parameters.port }}
+    #       java_version: ${{ parameters.java_version }}
 
     - id: publish
       name: Publish Repository
