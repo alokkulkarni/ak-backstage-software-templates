@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: springboot-gradle-template
-  title: Spring Boot gradle Service
-  description: Create a simple microservice using Spring Boot Java and Gradle
+  title: Spring Boot Gradle Service
+  description: Create a simple microservice using Spring Boot, Java, and Gradle
   tags:
     - recommended
     - java
@@ -14,25 +14,53 @@ spec:
   type: service
 
   parameters:
-    - title: Provide some simple information
+    - title: Provide service details
       required:
         - component_id
         - owner
         - java_package_name
+        - artifact_id
+        - org_owner
+        - port
+        - java_version
+        - source_control
       properties:
         component_id:
           title: Name
           type: string
           description: Unique name of the component
           ui:field: EntityNamePicker
+        artifact_id:
+          title: Artifact ID
+          type: string
+          description: Artifact ID for the service (e.g., service-name)
+        org_owner:
+          title: Organization Owner
+          type: string
+          description: Organization that owns this service
         java_package_name:
           title: Java Package Name
           type: string
-          description: Name for the java package. eg (io.backstage.blah)
+          description: Java package name (e.g., io.backstage.service)
+        port:
+          title: Service Port
+          type: number
+          description: Port on which the service will run
+          default: 8080
+        java_version:
+          title: Java Version
+          type: string
+          description: Java version to use (e.g., 17, 21)
+          enum: ["11", "17", "21"]
+        source_control:
+          title: Source Control Provider
+          type: string
+          description: The source control provider (e.g., github.com, gitlab.com)
+          default: github.com
         description:
           title: Description
           type: string
-          description: Help others understand what this website is for.
+          description: Short description of the service.
         owner:
           title: Owner
           type: string
@@ -41,7 +69,8 @@ spec:
           ui:options:
             allowedKinds:
               - Group
-    - title: Choose a location
+
+    - title: Choose a repository location
       required:
         - repoUrl
       properties:
@@ -52,6 +81,7 @@ spec:
           ui:options:
             allowedHosts:
               - github.com
+              - gitlab.com
 
   steps:
     - id: template
@@ -63,24 +93,40 @@ spec:
           - .github/workflows/*
         values:
           component_id: ${{ parameters.component_id }}
-          description: ${{ parameters.description }}
-          artifact_id: ${{ parameters.component_id }}
+          artifact_id: ${{ parameters.artifact_id }}
+          org_owner: ${{ parameters.org_owner }}
           java_package_name: ${{ parameters.java_package_name }}
+          description: ${{ parameters.description }}
           owner: ${{ parameters.owner }}
+          port: ${{ parameters.port }}
+          java_version: ${{ parameters.java_version }}
+          source_control: ${{ parameters.source_control }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
-          http_port: 8080
+
+    - id: copy-workflows
+      name: Copy GitHub Actions Workflows
+      action: fs:template
+      input:
+        targetPath: ${{ parameters.repoUrl | parseRepoUrl }}/.github/workflows
+        values:
+          component_id: ${{ parameters.component_id }}
+          artifact_id: ${{ parameters.artifact_id }}
+          org_owner: ${{ parameters.org_owner }}
+          java_package_name: ${{ parameters.java_package_name }}
+          port: ${{ parameters.port }}
+          java_version: ${{ parameters.java_version }}
 
     - id: publish
-      name: Publish
+      name: Publish Repository
       action: publish:github
       input:
-        allowedHosts: ["github.com"]
+        allowedHosts: ["github.com", "gitlab.com"]
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
         repoVisibility: public
 
     - id: register
-      name: Register
+      name: Register in Backstage Catalog
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
