@@ -1,4 +1,4 @@
-name: Build, Push & Deploy to MicroK8s using ArgoCD
+name: Deploy to MicroK8s using ArgoCD
 run-name: Deploy to MicroK8s using ArgoCD
 on:
   push:
