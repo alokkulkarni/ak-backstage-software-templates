@@ -105,7 +105,7 @@ spec:
       name: Fetch Skeleton + Template
       action: fetch:template
       input:
-        url: ./skeleton/github-actions/
+        url: ./github-actions/
         copyWithoutTemplating:
           - ./github/workflows/
         values:
