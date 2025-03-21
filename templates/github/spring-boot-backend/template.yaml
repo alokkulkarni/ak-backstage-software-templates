@@ -152,8 +152,8 @@ spec:
       action: fetch:template
       input:
         url: ../../../skeletons/github-actions/
-        # copyWithoutTemplating:
-        #   - .github/workflows/
+        copyWithoutTemplating:
+          - .github/workflows/
         values:
           orgName: ${{ parameters.orgName }}
           repoName: ${{ parameters.repoName }}

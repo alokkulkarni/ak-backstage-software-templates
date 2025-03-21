@@ -84,13 +84,30 @@ spec:
               - gitlab.com
 
   steps:
-    - id: fetch-skeleton
+    - id: fetch-code-skeleton
       name: Fetch Skeleton + Template
       action: fetch:template
       input:
         url: ./skeleton
+        values:
+          component_id: ${{ parameters.component_id }}
+          artifact_id: ${{ parameters.artifact_id }}
+          org_owner: ${{ parameters.org_owner }}
+          java_package_name: ${{ parameters.java_package_name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          port: ${{ parameters.port }}
+          java_version: ${{ parameters.java_version }}
+          source_control: ${{ parameters.source_control }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+   
+    - id: fetch-ci-skeleton
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton/github-actions/
         copyWithoutTemplating:
-          - "./github/workflows"
+          - ./github/workflows/
         values:
           component_id: ${{ parameters.component_id }}
           artifact_id: ${{ parameters.artifact_id }}
