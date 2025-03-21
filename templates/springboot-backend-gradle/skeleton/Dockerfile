@@ -13,5 +13,5 @@ COPY build/libs/*.jar app.jar
 # LABEL org.opencontainers.image.sbom.path="/app/sbom"
 # LABEL org.cyclonedx.sbom.format="JSON,XML"
 
-EXPOSE 8080
+EXPOSE 8086
 ENTRYPOINT ["java","-jar","app.jar"]
