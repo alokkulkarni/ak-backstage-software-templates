@@ -8,6 +8,10 @@ on:
 jobs:
   deploy-to-microk8s:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      contents: write
+    
     steps:
       - name: Install ArgoCD CLI
         run: |
