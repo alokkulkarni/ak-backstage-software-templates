@@ -34,7 +34,7 @@ jobs:
           # Create ArgoCD application for Spring Boot if not exists
           if ! argocd app list | grep -q "${{values.artifact_id}}"; then
             argocd app create springboot-app \
-              --repo https://github.com/${{values.owner}}/${{values.artifact_id}}.git \
+              --repo https://github.com/${{values.org_owner}}/${{values.artifact_id}}.git \
               --path manifests/base \
               --dest-server https://kubernetes.default.svc \
               --dest-namespace default \

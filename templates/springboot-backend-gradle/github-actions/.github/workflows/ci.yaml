@@ -53,8 +53,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ${{values.owner}}/${{values.artifact_id}}:latest .
+          docker build -t ${{values.org_owner}}/${{values.artifact_id}}:latest .
 
       - name: Push Docker Image
         run: |
-          docker push ${{values.owner}}/${{values.artifact_id}}:latest
+          docker push ${{values.org_owner}}/${{values.artifact_id}}:latest
