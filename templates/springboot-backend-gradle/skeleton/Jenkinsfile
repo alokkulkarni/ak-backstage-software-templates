@@ -90,7 +90,7 @@ pipeline {
         }
         // stage('SonarQube Analysis') {
         //     steps {
-        //         withSonarQubeEnv('SonarQube') {  // Configure this in Jenkins
+        //         withSonarQubeEnv('SonarQube') {
         //             sh """
         //                 ./gradlew sonar \
         //                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \

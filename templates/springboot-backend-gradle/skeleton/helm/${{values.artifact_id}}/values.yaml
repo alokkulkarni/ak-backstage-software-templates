@@ -2,7 +2,7 @@
 replicaCount: 2
 
 image:
-  repository: spring-demo-gradle/${{values.artifact_id}}
+  repository: ${{values.org_owner}}/${{values.artifact_id}}
   tag: 0.0.1-SNAPSHOT
   pullPolicy: IfNotPresent
 
@@ -21,7 +21,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8080
+  targetPort: ${{values.port}}
 
 ingress:
   enabled: true

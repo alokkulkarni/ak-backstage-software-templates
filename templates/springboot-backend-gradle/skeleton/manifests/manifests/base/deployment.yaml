@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: ${{values.artifact_id}}
-          image: ${{values.destination.owner}}/${{values.artifact_id}}:latest
+          image: ${{values.org_owner}}/${{values.artifact_id}}:latest
           ports:
             - name: http-8086
               containerPort: 8086

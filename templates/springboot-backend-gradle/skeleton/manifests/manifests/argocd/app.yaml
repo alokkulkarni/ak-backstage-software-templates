@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     path: manifests/base
-    repoURL: https://github.com/${{values.destination.owner}}/${{values.artifact_id}}.git
+    repoURL: https://github.com/${{values.org_owner}}/${{values.artifact_id}}.git
     targetRevision: main
   syncPolicy:
     automated:
