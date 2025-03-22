@@ -16,14 +16,6 @@ java {
     sourceCompatibility = '17'
 }
 
-sonar {
-  properties {
-    property "sonar.projectKey", "alokkulkarni_paymentsapi_22c63831-fcc1-4264-9be4-0d16468afcdd"
-    property "sonar.projectName", "paymentsapi"
-    property "sonar.scm.disabled", "true"
-  }
-}
-
 repositories {
     mavenCentral()
 }
@@ -69,6 +61,14 @@ jacocoTestCoverageVerification {
     }
 }
 
+sonar {
+  properties {
+    property "sonar.projectKey", '${{values.org_owner + "_" + values.artifact_id}}'
+    property "sonar.projectName", '${{values.artifact_id}}'
+    property "sonar.scm.disabled", "true"
+  }
+}
+
 pitest {
     targetClasses = ['com.example.${{values.java_package_name}}.*']
     threads = 4
@@ -105,4 +105,5 @@ task copySbomArtifacts(type: Copy, dependsOn: 'cyclonedxBom') {
 
 build {
     dependsOn copySbomArtifacts
+    dependsOn sonar
 }

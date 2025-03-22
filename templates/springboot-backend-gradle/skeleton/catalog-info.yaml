@@ -6,9 +6,9 @@ metadata:
   description: ${{values.description | dump}}
   {%- endif %}
   annotations:
-    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
+    github.com/project-slug: ${{values.org_owner + "/" + values.artifact_id}}
     backstage.io/techdocs-ref: dir:.
-    sonarqube.org/project-key: ${{values.destination.owner + "/" + values.destination.repo}}
+    sonarqube.org/project-key: ${{values.org_owner + "_" + values.artifact_id}}
     backstage.io/code-coverage: scm-only
     # backstage.io/source-location: '${{values.destination.repo.url}}'
     # backstage.io/managed-by-location: '${{values.destination.repo.url}}'
