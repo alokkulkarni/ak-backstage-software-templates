@@ -8,7 +8,7 @@ metadata:
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
     backstage.io/techdocs-ref: dir:.
-    sonarqube.org/project-key: ${{values.artifact_id}}
+    sonarqube.org/project-key: ${{values.destination.owner + "/" + values.destination.repo}}
     backstage.io/code-coverage: scm-only
     # backstage.io/source-location: '${{values.destination.repo.url}}'
     # backstage.io/managed-by-location: '${{values.destination.repo.url}}'
