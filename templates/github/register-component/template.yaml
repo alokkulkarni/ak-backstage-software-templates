@@ -31,7 +31,9 @@ spec:
         repositoryName:
           title: Repository name
           type: string
-
+        description:
+          title: Respository Description
+          type: string
     - title: Provide information about the new component
       required:
         - componentOwner
@@ -79,6 +81,7 @@ spec:
           componentName: ${{ parameters.componentName }}
           orgName: ${{ parameters.githubOrganization }}
           sourceControl: github.com
+          description: ${{ parameters.description }}
           repoName: ${{ parameters.repositoryName }}
           componentLifecycle: ${{ parameters.componentLifecycle }}
           applicationType: ${{ parameters.componentType }}
