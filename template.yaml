@@ -7,6 +7,7 @@ spec:
   type: url
   targets:
     - templates/springboot-backend-gradle/template.yaml
+    - templates/build-and-burn-aws-eks/template.yaml
     - templates/github/nodejs-backend/template.yaml
     - templates/azure/dotnet-frontend/template.yaml
     - templates/github/spring-boot-backend/template.yaml
