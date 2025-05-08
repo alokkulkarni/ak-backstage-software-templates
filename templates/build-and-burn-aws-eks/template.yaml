@@ -194,18 +194,6 @@ spec:
           dependencies: ${{ parameters.dependencies }}
           customK8sPath: ${{ parameters.customK8sPath }}
 
-    - id: createRepository
-      name: Create GitHub Repository
-      action: github:createRepository
-      if: ${{ true }}
-      input:
-        repoUrl: github.com?repo=${{ parameters.repoName }}&owner=${{ parameters.githubOrg }}
-        description: Repository for Build and Burn environment manifests
-        defaultBranch: main
-        visibility: private
-        deleteBranchOnMerge: true
-        protectDefaultBranch: false
-
     - id: publishManifest
       name: Publish Manifest
       action: github:publishFile
@@ -216,49 +204,16 @@ spec:
         sourcePath: ./manifests/template.yaml
         targetPath: manifest.yaml
 
-    - id: setupGithubAction
-      name: Setup GitHub Action Workflow
-      action: github:publishFile
-      if: ${{ parameters.setupGithubAction }}
+  - id: publish
+      name: Publish Repository
+      action: publish:github
       input:
-        repoUrl: github.com?repo=${{ parameters.repoName }}&owner=${{ parameters.githubOrg }}
-        commitMessage: Setup Build and Burn GitHub Actions workflow
-        branch: main
-        sourcePath: ./workflows/buildandburn.yml
-        targetPath: .github/workflows/buildandburn.yml
-
-    - id: createReadme
-      name: Create README
-      action: github:publishFile
-      input:
-        repoUrl: github.com?repo=${{ parameters.repoName }}&owner=${{ parameters.githubOrg }}
-        commitMessage: Add README for Build and Burn environment
-        branch: main
-        sourcePath: ./README.md
-        targetPath: README.md
-
-    - id: createSecrets
-      name: Configure GitHub Secrets
-      action: github:setupRepoSecrets
-      if: ${{ parameters.setupGithubAction }}
-      input:
-        repoUrl: github.com?repo=${{ parameters.repoName }}&owner=${{ parameters.githubOrg }}
-        secrets:
-          AWS_REGION: ${{ parameters.region }}
-        message: |
-          You need to manually add the following GitHub secrets to your repository:
-          
-          - AWS_ACCESS_KEY_ID
-          - AWS_SECRET_ACCESS_KEY
-          
-          These credentials should have permissions to create AWS resources.
+        allowedHosts: ["github.com", "gitlab.com"]
+        description: This is ${{ parameters.repoName }}
+        repoUrl: ${{ parameters.repoName }}
+        repoVisibility: public
 
   output:
     links:
       - title: Repository
         url: github.com/${{ parameters.githubOrg }}/${{ parameters.repoName }}
-      - title: GitHub Actions Workflow
-        if: ${{ parameters.setupGithubAction }}
-        url: github.com/${{ parameters.githubOrg }}/${{ parameters.repoName }}/actions
-      - title: Manifest
-        url: github.com/${{ parameters.githubOrg }}/${{ parameters.repoName }}/blob/main/manifest.yaml 
