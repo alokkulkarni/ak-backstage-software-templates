@@ -184,7 +184,7 @@ spec:
   steps:
     - id: generateManifest
       name: Generate Build and Burn Manifest
-      action: jinja:render
+      action: fetch:template
       input:
         path: ./manifests/template.yaml
         values:
