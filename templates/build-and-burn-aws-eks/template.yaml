@@ -186,7 +186,7 @@ spec:
       name: Generate Build and Burn Manifest
       action: fetch:template
       input:
-        path: ./manifests/template.yaml
+        url: ./manifests/template.yaml
         values:
           name: ${{ parameters.name }}
           region: ${{ parameters.region }}
