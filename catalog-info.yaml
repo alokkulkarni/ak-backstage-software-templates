@@ -7,4 +7,5 @@ metadata:
 spec:
   type: other
   lifecycle: unknown
-  owner: guests
+  owner: platform-team
+  system: vm-idp
