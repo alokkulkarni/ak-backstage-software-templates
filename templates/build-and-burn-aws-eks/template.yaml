@@ -202,7 +202,7 @@ spec:
         commitMessage: Add Build and Burn manifest
         branch: main
         sourcePath: ./manifests/template.yaml
-        targetPath: manifest.yaml
+        targetPath: ./manifest.yaml
 
   - id: publish
       name: Publish Repository
