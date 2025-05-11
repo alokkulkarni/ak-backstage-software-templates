@@ -28,12 +28,12 @@ jobs:
           distribution: 'temurin'
           java-version: '${{values.java_version}}'
 
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+      # - name: Cache SonarQube packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.sonar/cache
+      #     key: ${{ runner.os }}-sonar
+      #     restore-keys: ${{ runner.os }}-sonar
       
       # - name: Cache Gradle packages
       #   uses: actions/cache@v4
