@@ -38,16 +38,6 @@ test {
 jacoco {
     toolVersion = '0.8.13'
     reportsDirectory = file("$buildDir/customJacocoReportDir")
-    reports {
-        xml.enabled = true
-        csv.enabled = false
-        html.enabled = true
-    }
-    afterEvaluate {
-        jacocoTestReport {
-            executionData.setFrom(fileTree(project.buildDir).include("jacoco/test.exec"))
-        }
-    }
 }
 
 
