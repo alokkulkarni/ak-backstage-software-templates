@@ -66,6 +66,8 @@ sonar {
     property "sonar.projectKey", '${{values.org_owner + "_" + values.artifact_id}}'
     property "sonar.projectName", '${{values.artifact_id}}'
     property "sonar.scm.disabled", "true"
+    property "sonar.host.url", "https://your-sonarqube-server.com"
+    property "sonar.login", System.getenv("SONAR_TOKEN")
   }
 }
 
@@ -105,5 +107,5 @@ task copySbomArtifacts(type: Copy, dependsOn: 'cyclonedxBom') {
 
 build {
     dependsOn copySbomArtifacts
-    dependsOn sonar
+    // dependsOn sonar
 }

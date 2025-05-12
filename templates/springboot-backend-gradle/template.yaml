@@ -124,10 +124,12 @@ spec:
       name: Publish Repository
       action: publish:github
       input:
-        allowedHosts: ["github.com", "gitlab.com"]
+        allowedHosts: ["github.com"]
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
         repoVisibility: public
+        commitMessage: Add Spring Boot Gradle Service
+        defaultBranch: main
 
     - id: register
       name: Register in Backstage Catalog
