@@ -35,11 +35,30 @@ test {
     finalizedBy jacocoTestReport
 }
 
+jacoco {
+    toolVersion = '0.8.13'
+    reportsDirectory = file("$buildDir/customJacocoReportDir")
+    reports {
+        xml.enabled = true
+        csv.enabled = false
+        html.enabled = true
+    }
+    afterEvaluate {
+        jacocoTestReport {
+            executionData.setFrom(fileTree(project.buildDir).include("jacoco/test.exec"))
+        }
+    }
+}
+
+
 jacocoTestReport {
     dependsOn test
     reports {
         xml.required = true
+        csv.required = false
         html.required = true
+        html.outputLocation = file("$buildDir/customJacocoReportDir")
+        xml.outputLocation = file("$buildDir/customJacocoReportDir/jacocoTestReport.xml")
     }
 }
 
@@ -66,6 +85,9 @@ sonar {
     property "sonar.projectKey", '${{values.org_owner + "_" + values.artifact_id}}'
     property "sonar.projectName", '${{values.artifact_id}}'
     property "sonar.scm.disabled", "true"
+    property "sonar.sources", "src/main/java"
+    property "sonar.tests", "src/test/java"
+    property "sonar.jacoco.reportPaths", "${project.buildDir}/customJacocoReportDir/jacocoTestReport.xml"
     property "sonar.host.url", "https://your-sonarqube-server.com"
     property "sonar.login", System.getenv("SONAR_TOKEN")
   }
