@@ -126,7 +126,7 @@ spec:
         method: 'POST'
         path: '/proxy/sonarqube/api/projects/create'
         headers:
-          Authorization: 'Bearer sqa_260a80756aff11e23d7895d5dfaf66cbb918312d'
+          Authorization: 'Bearer squ_3d7c255060f46197b55354e6d43ee7336385a821'
           Content-Type: 'application/json'
         body:
           project: ${{ parameters.artifact_id }}
