@@ -119,20 +119,6 @@ spec:
           source_control: ${{ parameters.source_control }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
-    # - id: createSonarProject
-    #   name: Create SonarQube Project
-    #   action: http:backstage:request
-    #   input:
-    #     method: 'POST'
-    #     path: '/proxy/sonarqube/api/projects/create'
-    #     headers:
-    #       Authorization: 'Bearer squ_3d7c255060f46197b55354e6d43ee7336385a821'
-    #       Content-Type: 'application/json'
-    #     body:
-    #       project: ${{ parameters.artifact_id }}
-    #       name: ${{ parameters.artifact_id }}
-    #       projectKey: ${{ parameters.org_owner + "_" + parameters.artifact_id }}
-
     - id: publish
       name: Publish Repository
       action: publish:github

@@ -71,16 +71,14 @@ jacocoTestCoverageVerification {
 }
 
 sonar {
-  properties {
-    property "sonar.projectKey", '${{values.org_owner + "_" + values.artifact_id}}'
-    property "sonar.projectName", '${{values.artifact_id}}'
-    property "sonar.scm.disabled", "true"
-    property "sonar.sources", "src/main/java"
-    property "sonar.tests", "src/test/java"
-    property "sonar.jacoco.reportPaths", "${project.buildDir}/customJacocoReportDir/jacocoTestReport.xml"
-    property "sonar.host.url", ${secrets.SONAR_HOST_URL}
-    property "sonar.login", ${secrets.SONAR_TOKEN}
-  }
+    properties {
+        property "sonar.projectKey", 'alokkulkarni_paymentsapi'
+        property "sonar.projectName", 'paymentsapi'
+        property "sonar.scm.disabled", "true"
+        property "sonar.jacoco.reportPaths", "${project.buildDir}/customJacocoReportDir/jacocoTestReport.xml"
+        property "sonar.host.url", ${secrets.SONAR_HOST_URL}
+        property "sonar.token", ${secrets.SONAR_TOKEN}
+    }
 }
 
 pitest {
