@@ -78,8 +78,8 @@ sonar {
     property "sonar.sources", "src/main/java"
     property "sonar.tests", "src/test/java"
     property "sonar.jacoco.reportPaths", "${project.buildDir}/customJacocoReportDir/jacocoTestReport.xml"
-    property "sonar.host.url", "https://your-sonarqube-server.com"
-    property "sonar.login", System.getenv("SONAR_TOKEN")
+    property "sonar.host.url", ${secrets.SONAR_HOST_URL}
+    property "sonar.login", ${secrets.SONAR_TOKEN}
   }
 }
 

@@ -81,7 +81,6 @@ spec:
           ui:options:
             allowedHosts:
               - github.com
-              - gitlab.com
 
   steps:
     - id: fetch-code-skeleton
