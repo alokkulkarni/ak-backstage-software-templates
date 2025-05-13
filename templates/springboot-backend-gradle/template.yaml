@@ -119,6 +119,20 @@ spec:
           source_control: ${{ parameters.source_control }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
+    - id: createSonarProject
+      name: Create SonarQube Project
+      action: http:backstage:request
+      input:
+        method: 'POST'
+        url: '/proxy/sonarqube/api/projects/create'
+        headers:
+          Authorization: 'Basic ${{ sqa_260a80756aff11e23d7895d5dfaf66cbb918312d }}'
+          Content-Type: 'application/json'
+        body:
+          project: ${{ parameters.artifact_id }}
+          name: ${{ parameters.artifact_id }}
+          projectKey: ${{ parameters.org_owner + "_" + parameters.artifact_id }}
+
     - id: publish
       name: Publish Repository
       action: publish:github
@@ -129,19 +143,6 @@ spec:
         repoVisibility: public
         commitMessage: Add Spring Boot Gradle Service
         defaultBranch: main
-      
-    - id: createSonarProject
-      name: Create SonarQube Project
-      action: http:backstage:request
-      input:
-        method: 'POST'
-        url: '/proxy/sonarqube/api/projects/create'
-        headers:
-          Authorization: 'Basic ${{ sqa_260a80756aff11e23d7895d5dfaf66cbb918312d }}'
-          Content-Type: application/x-www-form-urlencoded
-        body:
-          project: ${{ parameters.artifact_id }}
-          name: ${{ parameters.artifact_id }}
 
     - id: register
       name: Register in Backstage Catalog
