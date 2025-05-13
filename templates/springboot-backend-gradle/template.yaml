@@ -130,6 +130,13 @@ spec:
         repoVisibility: public
         commitMessage: Add Spring Boot Gradle Service
         defaultBranch: main
+      
+    - id: create-sonar-project
+      name: Create SonarQube Project
+      action: shell
+      input:
+        script: |
+          curl --noproxy '*' -D -X POST -k -u 'admin':${{sonarqube.apiKey}} -H 'content-type: application/json' -d "name=${{parameters.artifact_id}}&key=${{parameters.artifact_id}}" ${{sonarqube.baseUrl}}/api/projects/create
 
     - id: register
       name: Register in Backstage Catalog
