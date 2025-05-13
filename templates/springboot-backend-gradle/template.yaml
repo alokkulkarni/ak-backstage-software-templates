@@ -124,7 +124,7 @@ spec:
       action: http:backstage:request
       input:
         method: 'POST'
-        url: '/proxy/sonarqube/api/projects/create'
+        path: '/proxy/sonarqube/api/projects/create'
         headers:
           Authorization: 'Basic ${{ sqa_260a80756aff11e23d7895d5dfaf66cbb918312d }}'
           Content-Type: 'application/json'
