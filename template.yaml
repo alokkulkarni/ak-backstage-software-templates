@@ -20,3 +20,4 @@ spec:
     - templates/github/techdocs/template.yaml
     - templates/create-backend-plugin/template.yaml
     - templates/create-frontend-plugin/template.yaml
+    - templates/terraform-environment/template.yaml
