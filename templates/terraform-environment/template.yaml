@@ -1,0 +1,177 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: terraform-environment
+  title: Create Terraform Environment
+  description: Create a new ephemeral environment using Terraform
+  tags:
+    - terraform
+    - aws
+    - environment
+  type: service
+
+spec:
+  type: service
+  parameters:
+    - title: Project Information
+      required:
+        - projectName
+        - orgName
+        - squadName
+      properties:
+        projectName:
+          title: Project Name
+          type: string
+          description: Name of the project
+          pattern: '^[a-z0-9-]+$'
+          ui:field: TextField
+          ui:options:
+            rows: 1
+        orgName:
+          title: Organization Name
+          type: string
+          description: Name of the organization
+          pattern: '^[a-z0-9-]+$'
+          ui:field: TextField
+          ui:options:
+            rows: 1
+        squadName:
+          title: Squad Name
+          type: string
+          description: Name of the squad
+          pattern: '^[a-z0-9-]+$'
+          ui:field: TextField
+          ui:options:
+            rows: 1
+
+    - title: Environment Configuration
+      required:
+        - environment
+        - awsRegion
+        - enableRds
+        - enableDynamodb
+        - enableS3
+        - enableElasticache
+      properties:
+        environment:
+          title: Environment
+          type: string
+          description: Environment name (e.g., dev, staging, prod)
+          enum: [dev, staging, prod]
+          ui:field: SelectField
+        awsRegion:
+          title: AWS Region
+          type: string
+          description: AWS region to deploy the infrastructure
+          enum: [us-east-1, us-west-2, eu-west-1, ap-southeast-1]
+          ui:field: SelectField
+        enableRds:
+          title: Enable RDS
+          type: boolean
+          description: Enable RDS PostgreSQL database
+          ui:field: SwitchField
+        enableDynamodb:
+          title: Enable DynamoDB
+          type: boolean
+          description: Enable DynamoDB tables
+          ui:field: SwitchField
+        enableS3:
+          title: Enable S3
+          type: boolean
+          description: Enable S3 buckets
+          ui:field: SwitchField
+        enableElasticache:
+          title: Enable ElastiCache
+          type: boolean
+          description: Enable ElastiCache Redis
+          ui:field: SwitchField
+
+  steps:
+    - id: create-pr
+      name: Create Pull Request
+      action: publish:github:pull-request
+      input:
+        repoUrl: https://github.com/alokkulkarni/ephemeralenvironments.git
+        title: "Create environment for ${{ parameters.projectName }}"
+        branchName: "env/${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}"
+        description: |
+          This PR creates a new environment for:
+          - Project: ${{ parameters.projectName }}
+          - Organization: ${{ parameters.orgName }}
+          - Squad: ${{ parameters.squadName }}
+          - Environment: ${{ parameters.environment }}
+        commitMessage: "Create environment configuration"
+        sourcePath: .
+        files:
+          - path: aws/terraform.tfvars
+            content: |
+              # Environment Configuration
+              environment = "${{ parameters.environment }}"
+              aws_region = "${{ parameters.awsRegion }}"
+              
+              # Project Information
+              project_name = "${{ parameters.projectName }}"
+              org_name = "${{ parameters.orgName }}"
+              squad_name = "${{ parameters.squadName }}"
+              
+              # Optional Components
+              enable_rds = ${{ parameters.enableRds }}
+              enable_dynamodb = ${{ parameters.enableDynamodb }}
+              enable_s3 = ${{ parameters.enableS3 }}
+              enable_elasticache = ${{ parameters.enableElasticache }}
+              
+              # VPC Configuration
+              vpc_cidr = "10.0.0.0/16"
+              availability_zones = ["${{ parameters.awsRegion }}a", "${{ parameters.awsRegion }}b", "${{ parameters.awsRegion }}c"]
+              
+              # EKS Configuration
+              cluster_name = "${{ parameters.projectName }}-${{ parameters.environment }}"
+              cluster_version = "1.28"
+              node_instance_types = ["t3.medium"]
+              desired_size = 2
+              max_size = 4
+              min_size = 1
+              
+              # Optional Component Configurations
+              ${{#if parameters.enableRds}}
+              # RDS Configuration
+              db_name = "${{ parameters.projectName }}_${{ parameters.environment }}"
+              db_instance_class = "db.t3.medium"
+              db_allocated_storage = 20
+              ${{/if}}
+              
+              ${{#if parameters.enableDynamodb}}
+              # DynamoDB Configuration
+              dynamodb_tables = {
+                "${{ parameters.projectName }}-${{ parameters.environment }}" = {
+                  billing_mode = "PAY_PER_REQUEST"
+                  hash_key = "id"
+                  attributes = [
+                    {
+                      name = "id"
+                      type = "S"
+                    }
+                  ]
+                }
+              }
+              ${{/if}}
+              
+              ${{#if parameters.enableS3}}
+              # S3 Configuration
+              s3_buckets = {
+                "${{ parameters.projectName }}-${{ parameters.environment }}" = {
+                  versioning = true
+                  encryption = true
+                }
+              }
+              ${{/if}}
+              
+              ${{#if parameters.enableElasticache}}
+              # ElastiCache Configuration
+              elasticache_cluster = {
+                engine = "redis"
+                node_type = "cache.t3.micro"
+                num_cache_nodes = 1
+                port = 6379
+              }
+              ${{/if}} 
