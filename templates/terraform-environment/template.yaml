@@ -52,6 +52,8 @@ spec:
         - enableDynamodb
         - enableS3
         - enableElasticache
+        - lifetimeDays
+        - autoDestroy
       properties:
         environment:
           title: Environment
@@ -85,6 +87,20 @@ spec:
           type: boolean
           description: Enable ElastiCache Redis
           ui:field: SwitchField
+        lifetimeDays:
+          title: Environment Lifetime
+          type: integer
+          description: Number of days before the environment is automatically destroyed
+          minimum: 1
+          maximum: 30
+          default: 7
+          ui:field: NumberField
+        autoDestroy:
+          title: Auto Destroy
+          type: boolean
+          description: Automatically destroy the environment after the lifetime expires
+          default: true
+          ui:field: SwitchField
 
   steps:
     - id: create-pr
@@ -100,6 +116,8 @@ spec:
           - Organization: ${{ parameters.orgName }}
           - Squad: ${{ parameters.squadName }}
           - Environment: ${{ parameters.environment }}
+          - Lifetime: ${{ parameters.lifetimeDays }} days
+          - Auto Destroy: ${{ parameters.autoDestroy }}
         commitMessage: "Create environment configuration"
         sourcePath: .
         files:
