@@ -146,7 +146,7 @@ spec:
         commitMessage: "Add terraform.tfvars for ${{ parameters.projectName }}" 
 
   output:
-  links:
-    - title: 'Open PR #${{ steps.create-pr.output.pullRequestNumber }}'
-      url: ${{ steps.create-pr.output.remoteUrl }}
-      file: ${{ steps.templateTfvars.output.filePath }}
+    links:
+      - title: 'Open PR #${{ steps.create-pr.output.pullRequestNumber }}'
+        url: ${{ steps.create-pr.output.remoteUrl }}
+        file: ${{ steps.templateTfvars.output.filePath }}
