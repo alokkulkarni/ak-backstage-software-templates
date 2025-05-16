@@ -106,7 +106,7 @@ spec:
       input:
         url: https://github.com/alokkulkarni/ephemeralenvironments
 
-    - id: catalogTemplate
+    - id: templateTfvars
       name: Create terraform.tfvars file
       action: fetch:template
       input:
@@ -140,6 +140,6 @@ spec:
           - Lifetime: ${{ parameters.lifetimeDays }} days
           - Auto Destroy: ${{ parameters.autoDestroy }}
         commitMessage: "Create environment configuration"
-         files:
+        files:
           - path: aws/terraform.tfvars
-            content: ${{ read('./skeleton/aws/terraform.tfvars') }}
+            content: ${{ steps.templateTfvars.output.result }}
