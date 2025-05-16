@@ -139,14 +139,10 @@ spec:
           - Environment: ${{ parameters.environment }}
           - Lifetime: ${{ parameters.lifetimeDays }} days
           - Auto Destroy: ${{ parameters.autoDestroy }}
-        updateBranch: true
-        updateExisting: true
         update: true
-        filePath: ${{ steps.templateTfvars.output.filePath }}
-        commitMessage: "Add terraform.tfvars for ${{ parameters.projectName }}" 
 
   output:
     links:
       - title: 'Open PR #${{ steps.create-pr.output.pullRequestNumber }}'
         url: ${{ steps.create-pr.output.remoteUrl }}
-        file: ${{ steps.templateTfvars.output.filePath }}
+        file: ${{ steps.templateTfvars.output.filePath.path }}
