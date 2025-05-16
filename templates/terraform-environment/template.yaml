@@ -140,6 +140,9 @@ spec:
           - Lifetime: ${{ parameters.lifetimeDays }} days
           - Auto Destroy: ${{ parameters.autoDestroy }}
         commitMessage: "Create environment configuration"
+        updateBranch: true
+        updateExisting: true
+        update: true
         # files:
         #   - path: aws/terraform.tfvars
         #     content: ${{ steps.templateTfvars.output.result }}
