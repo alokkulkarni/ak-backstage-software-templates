@@ -130,7 +130,7 @@ spec:
       input:
         repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
         title: "Create environment for ${{ parameters.projectName }}"
-        branchName: "env/${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}"
+        branchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
         description: |
           This PR creates a new environment for:
           - Project: ${{ parameters.projectName }}
@@ -142,4 +142,11 @@ spec:
         updateBranch: true
         updateExisting: true
         update: true
-        filePath: /aws/
+        filePath: ${{ steps.templateTfvars.output.filePath }}
+        commitMessage: "Add terraform.tfvars for ${{ parameters.projectName }}" 
+
+  output:
+  links:
+    - title: 'Open PR #${{ steps.create-pr.output.pullRequestNumber }}'
+      url: ${{ steps.create-pr.output.remoteUrl }}
+      file: ${{ steps.templateTfvars.output.filePath }}
