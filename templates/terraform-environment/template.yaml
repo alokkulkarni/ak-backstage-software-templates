@@ -104,7 +104,8 @@ spec:
       name: Create Pull Request
       action: publish:github:pull-request
       input:
-        repoUrl: https://github.com/alokkulkarni/ephemeralenvironments.git
+        repoUrl: https://github.com?owner=alokkulkarni&repo=ephemeralenvironments
+        # repoUrl: https://github.com/alokkulkarni/ephemeralenvironments.git
         title: "Create environment for ${{ parameters.projectName }}"
         branchName: "env/${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}"
         description: |
