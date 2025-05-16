@@ -61,7 +61,7 @@ spec:
           title: AWS Region
           type: string
           description: AWS region to deploy the infrastructure
-          enum: [us-east-1, us-west-2, eu-west-1, ap-southeast-1]
+          enum: [us-east-1, us-west-2, eu-west-1, ap-southeast-1, eu-west-1, eu-west-2]
           ui:field: SelectField
         enableRds:
           title: Enable RDS
