@@ -106,88 +106,23 @@ spec:
       input:
         url: https://github.com/alokkulkarni/ephemeralenvironments
 
-    - id: create-workspace
-      name: Create Temporary Workspace
-      action: fs:create
+    - id: catalogTemplate
+      name: Create terraform.tfvars file
+      action: fetch:template
       input:
-        directory: ./workspace
-
-    - id: create-terraform-config
-      name: Create Terraform Config File
-      action: fs:write
-      input:
-        path: ./workspace/terraform.tfvars
-        content: |
-          # Environment Configuration
-          environment = "${{ parameters.environment }}"
-          aws_region = "${{ parameters.awsRegion }}"
-          
-          # Project Information
-          project_name = "${{ parameters.projectName }}"
-          org_name = "${{ parameters.orgName }}"
-          squad_name = "${{ parameters.squadName }}"
-          
-          # Optional Components
-          enable_rds = ${{ parameters.enableRds | default(false) }}
-          enable_dynamodb = ${{ parameters.enableDynamodb | default(false) }}
-          enable_s3 = ${{ parameters.enableS3 | default(false) }}
-          enable_elasticache = ${{ parameters.enableElasticache | default(false) }}
-          
-          # VPC Configuration
-          vpc_cidr = "10.0.0.0/16"
-          availability_zones = ["${{ parameters.awsRegion }}a", "${{ parameters.awsRegion }}b", "${{ parameters.awsRegion }}c"]
-          
-          # EKS Configuration
-          cluster_name = "${{ parameters.projectName }}-${{ parameters.environment }}"
-          cluster_version = "1.28"
-          node_instance_types = ["t3.medium"]
-          desired_size = 2
-          max_size = 4
-          min_size = 1
-          
-          # Optional Component Configurations
-          ${{#if parameters.enableRds}}
-          # RDS Configuration
-          db_name = "${{ parameters.projectName }}_${{ parameters.environment }}"
-          db_instance_class = "db.t3.medium"
-          db_allocated_storage = 20
-          ${{/if}}
-          
-          ${{#if parameters.enableDynamodb}}
-          # DynamoDB Configuration
-          dynamodb_tables = {
-            "${{ parameters.projectName }}-${{ parameters.environment }}" = {
-              billing_mode = "PAY_PER_REQUEST"
-              hash_key = "id"
-              attributes = [
-                {
-                  name = "id"
-                  type = "S"
-                }
-              ]
-            }
-          }
-          ${{/if}}
-          
-          ${{#if parameters.enableS3}}
-          # S3 Configuration
-          s3_buckets = {
-            "${{ parameters.projectName }}-${{ parameters.environment }}" = {
-              versioning = true
-              encryption = true
-            }
-          }
-          ${{/if}}
-          
-          ${{#if parameters.enableElasticache}}
-          # ElastiCache Configuration
-          elasticache_cluster = {
-            engine = "redis"
-            node_type = "cache.t3.micro"
-            num_cache_nodes = 1
-            port = 6379
-          }
-          ${{/if}}
+        url: ./skeleton/aws/
+        values:
+          environment: ${{ parameters.environment }}
+          awsRegion: ${{ parameters.awsRegion }}
+          projectName: ${{ parameters.projectName }}
+          orgName: ${{ parameters.orgName }}
+          squadName: ${{ parameters.squadName }}
+          enableRds: ${{ parameters.enableRds | default(false) }}
+          enableDynamodb: ${{ parameters.enableDynamodb | default(false) }}
+          enableS3: ${{ parameters.enableS3 | default(false) }}
+          enableElasticache: ${{ parameters.enableElasticache | default(false) }}
+          lifetimeDays: ${{ parameters.lifetimeDays }}
+          autoDestroy: ${{ parameters.autoDestroy }}
 
     - id: create-pr
       name: Create Pull Request
@@ -205,5 +140,4 @@ spec:
           - Lifetime: ${{ parameters.lifetimeDays }} days
           - Auto Destroy: ${{ parameters.autoDestroy }}
         commitMessage: "Create environment configuration"
-        sourcePath: ./workspace
         targetPath: aws
