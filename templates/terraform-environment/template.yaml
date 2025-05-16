@@ -25,64 +25,67 @@ spec:
           title: Project Name
           type: string
           description: Name of the project
-          pattern: '^[a-z0-9-]+$'
-          ui:field: TextField
+          pattern: '^[A-Za-z0-9-]+$'
+          ui:autofocus: true
         orgName:
           title: Organization Name
           type: string
           description: Name of the organization
           pattern: '^[a-z0-9-]+$'
-          ui:field: TextField
         squadName:
           title: Squad Name
           type: string
           description: Name of the squad
-          pattern: '^[a-z0-9-]+$'
-          ui:field: TextField
+          pattern: '^[A-Za-z0-9-]+$'
 
     - title: Environment Configuration
       required:
         - environment
         - awsRegion
-        - enableRds
-        - enableDynamodb
-        - enableS3
-        - enableElasticache
         - lifetimeDays
         - autoDestroy
       properties:
         environment:
           title: Environment
           type: string
-          description: Environment name (e.g., dev, staging, prod)
-          enum: [dev, staging, prod]
-          ui:field: SelectField
+          description: Environment name
+          enum: 
+            - dev
+            - staging
+            - prod
         awsRegion:
           title: AWS Region
           type: string
           description: AWS region to deploy the infrastructure
-          enum: [us-east-1, us-west-2, eu-west-1, ap-southeast-1, eu-west-1, eu-west-2]
-          ui:field: SelectField
+          enum:
+            - us-east-1
+            - us-east-2
+            - us-west-1
+            - us-west-2
+            - eu-west-1
+            - eu-west-2
+            - ap-southeast-1
+            - ap-southeast-2
         enableRds:
           title: Enable RDS
           type: boolean
           description: Enable RDS PostgreSQL database
-          ui:field: SwitchField
+          default: false
         enableDynamodb:
           title: Enable DynamoDB
           type: boolean
           description: Enable DynamoDB tables
-          ui:field: SwitchField
+          default: false
         enableS3:
           title: Enable S3
           type: boolean
           description: Enable S3 buckets
-          ui:field: SwitchField
+          default: false
         enableElasticache:
           title: Enable ElastiCache
           type: boolean
           description: Enable ElastiCache Redis
-          ui:field: SwitchField
+          default: false
         lifetimeDays:
           title: Environment Lifetime
           type: integer
@@ -90,13 +93,11 @@ spec:
           minimum: 1
           maximum: 30
           default: 7
-          ui:field: NumberField
         autoDestroy:
           title: Auto Destroy
           type: boolean
           description: Automatically destroy the environment after the lifetime expires
           default: true
-          ui:field: SwitchField
 
   steps:
     - id: create-pr
@@ -129,10 +130,10 @@ spec:
               squad_name = "${{ parameters.squadName }}"
               
               # Optional Components
-              enable_rds = ${{ parameters.enableRds }}
-              enable_dynamodb = ${{ parameters.enableDynamodb }}
-              enable_s3 = ${{ parameters.enableS3 }}
-              enable_elasticache = ${{ parameters.enableElasticache }}
+              enable_rds = ${{ parameters.enableRds | default(false) }}
+              enable_dynamodb = ${{ parameters.enableDynamodb | default(false) }}
+              enable_s3 = ${{ parameters.enableS3 | default(false) }}
+              enable_elasticache = ${{ parameters.enableElasticache | default(false) }}
               
               # VPC Configuration
               vpc_cidr = "10.0.0.0/16"
