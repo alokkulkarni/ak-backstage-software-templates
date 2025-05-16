@@ -140,6 +140,6 @@ spec:
           - Lifetime: ${{ parameters.lifetimeDays }} days
           - Auto Destroy: ${{ parameters.autoDestroy }}
         commitMessage: "Create environment configuration"
-        files:
-          - path: aws/terraform.tfvars
-            content: ${{ steps.templateTfvars.output.result }}
+        # files:
+        #   - path: aws/terraform.tfvars
+        #     content: ${{ steps.templateTfvars.output.result }}
