@@ -125,7 +125,7 @@ spec:
           autoDestroy: ${{ parameters.autoDestroy }}
 
     - id: create-pr
-      name: Create Pull Request
+      name: Create Pull Request with terraform.tfvars
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
