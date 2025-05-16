@@ -142,4 +142,4 @@ spec:
         commitMessage: "Create environment configuration"
          files:
           - path: aws/terraform.tfvars
-            content: ${{ read('./terraform.tfvars') }}
+            content: ${{ read('./skeleton/aws/terraform.tfvars') }}
