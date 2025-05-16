@@ -142,3 +142,4 @@ spec:
         updateBranch: true
         updateExisting: true
         update: true
+        filePath: /aws/
