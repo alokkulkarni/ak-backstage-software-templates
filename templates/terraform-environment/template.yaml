@@ -100,11 +100,17 @@ spec:
           default: true
 
   steps:
+    - id: fetchRepository
+      name: Fetch repository
+      action: fetch:plain
+      input:
+        url: https://github.com/alokkulkarni/ephemeralenvironments
+
     - id: create-pr
       name: Create Pull Request
       action: publish:github:pull-request
       input:
-        repoUrl: https://github.com?owner=alokkulkarni&repo=ephemeralenvironments
+        repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
         # repoUrl: https://github.com/alokkulkarni/ephemeralenvironments.git
         title: "Create environment for ${{ parameters.projectName }}"
         branchName: "env/${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}"
