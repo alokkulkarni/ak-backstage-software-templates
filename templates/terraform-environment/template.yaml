@@ -11,6 +11,8 @@ metadata:
   type: service
 
 spec:
+  owner: ak
+  system: ak-idp
   type: service
   parameters:
     - title: Project Information
@@ -25,24 +27,18 @@ spec:
           description: Name of the project
           pattern: '^[a-z0-9-]+$'
           ui:field: TextField
-          ui:options:
-            rows: 1
         orgName:
           title: Organization Name
           type: string
           description: Name of the organization
           pattern: '^[a-z0-9-]+$'
           ui:field: TextField
-          ui:options:
-            rows: 1
         squadName:
           title: Squad Name
           type: string
           description: Name of the squad
           pattern: '^[a-z0-9-]+$'
           ui:field: TextField
-          ui:options:
-            rows: 1
 
     - title: Environment Configuration
       required:
