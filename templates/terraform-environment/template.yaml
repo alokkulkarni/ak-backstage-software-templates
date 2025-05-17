@@ -124,13 +124,13 @@ spec:
           lifetimeDays: ${{ parameters.lifetimeDays }}
           autoDestroy: ${{ parameters.autoDestroy }}
 
-    - id: create-pr
+    - id: publishPR
       name: Create Pull Request with terraform.tfvars
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
         title: "Create ${{ parameters.environment }} environment for ${{ parameters.projectName }} ${{ parameters.orgName }} ${{ parameters.squadName }} "
-        targetBranchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
+        # targetBranchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
         targetPath: aws
         description: |
           This PR creates a new environment for:
@@ -143,7 +143,7 @@ spec:
 
   output:
     links:
-      - title: 'Open PR #${{ steps.create-pr.output.pullRequestNumber }}'
-        branch: ${{ steps.create-pr.output.targetBranchName }}
-        url: ${{ steps.create-pr.output.remoteUrl }}
+      - title: 'Open PR #${{ steps.publishPR.output.pullRequestNumber }}'
+        branch: ${{ steps.publishPR.output.targetBranchName }}
+        url: ${{ steps.publishPR.output.remoteUrl }}
         file: ${{ steps.templateTfvars.output.filePath.path }}
