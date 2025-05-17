@@ -125,12 +125,12 @@ spec:
           autoDestroy: ${{ parameters.autoDestroy }}
 
     - id: publishPR
-      name: Create Pull Request with terraform.tfvars
+      name: Open PR with terraform.tfvars
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
-        title: "Create ${{ parameters.environment }} environment for ${{ parameters.projectName }} ${{ parameters.orgName }} ${{ parameters.squadName }} "
-        # targetBranchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
+        title: "Create ${{ parameters.environment }} environment for ${{ parameters.projectName }} ${{ parameters.orgName }} ${{ parameters.squadName }}"
+        branchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
         targetPath: aws
         description: |
           This PR creates a new environment for:
