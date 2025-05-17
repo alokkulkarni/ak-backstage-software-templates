@@ -129,8 +129,9 @@ spec:
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
-        title: "Create environment for ${{ parameters.projectName }}"
-        branchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
+        title: "Create ${{ parameters.environment }} environment for ${{ parameters.projectName }} ${{ parameters.orgName }} ${{ parameters.squadName }} "
+        targetBranchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
+        targetPath: aws
         description: |
           This PR creates a new environment for:
           - Project: ${{ parameters.projectName }}
@@ -139,10 +140,10 @@ spec:
           - Environment: ${{ parameters.environment }}
           - Lifetime: ${{ parameters.lifetimeDays }} days
           - Auto Destroy: ${{ parameters.autoDestroy }}
-        update: true
 
   output:
     links:
       - title: 'Open PR #${{ steps.create-pr.output.pullRequestNumber }}'
+        branch: ${{ steps.create-pr.output.targetBranchName }}
         url: ${{ steps.create-pr.output.remoteUrl }}
         file: ${{ steps.templateTfvars.output.filePath.path }}
