@@ -100,12 +100,6 @@ spec:
           default: true
 
   steps:
-    - id: fetchRepository
-      name: Fetch repository
-      action: fetch:plain
-      input:
-        url: https://github.com/alokkulkarni/ephemeralenvironments
-
     - id: templateTfvars
       name: Create terraform.tfvars file
       action: fetch:template
@@ -131,7 +125,7 @@ spec:
         repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
         title: "Create ${{ parameters.environment }} environment for ${{ parameters.projectName }} ${{ parameters.orgName }} ${{ parameters.squadName }}"
         branchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}"
-        targetPath: ephemeralenvironments/aws/terraform.tfvars
+        targetPath: aws
         description: |
           This PR creates a new environment for:
           - Project: ${{ parameters.projectName }}
