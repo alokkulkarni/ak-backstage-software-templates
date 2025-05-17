@@ -104,6 +104,10 @@ spec:
     - id: generated-values
       name: Generate values for terraform.tfvars
       action: create:values
+      input:
+        values:
+          customPrefix: my-app
+          environment: ${{ parameters.environment }}
 
     - id: templateTfvars
       name: Create terraform.tfvars file
@@ -129,7 +133,7 @@ spec:
       input:
         repoUrl: github.com?owner=alokkulkarni&repo=ephemeralenvironments
         title: "Create ${{ parameters.environment }} environment for ${{ parameters.projectName }} ${{ parameters.orgName }} ${{ parameters.squadName }}"
-        branchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}-${{ steps.generate-values.output.values.shortId }}"
+        branchName: "${{ parameters.projectName }}-${{ parameters.orgName }}-${{ parameters.squadName }}-${{ parameters.environment }}-${{ steps.generated-values.output.values.shortId }}"
         targetPath: aws
         description: |
           This PR creates a new environment for:
