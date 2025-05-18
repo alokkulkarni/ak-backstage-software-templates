@@ -102,12 +102,11 @@ spec:
   steps:
 
     - id: generated-values
-      name: Generate values for terraform.tfvars
+      name: Generate values
       action: create:values
       input:
         values:
-          customPrefix: my-app
-          environment: ${{ parameters.environment }}
+          customPrefix: "my-app"
 
     - id: templateTfvars
       name: Create terraform.tfvars file
