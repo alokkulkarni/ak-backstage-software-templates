@@ -24,6 +24,14 @@ spec:
   owner: ${{values.owner | dump}}
   system: ${{values.destination.owner + "/" + values.destination.repo}}
   providesApis:
-    - ${{values.artifact_id}} 
+    - kind: OpenAPI
+      name: ${{values.artifact_id}}
+      description: OpenAPI specification for the service
+      lifecycle: experimental
+      owner: ${{values.owner | dump}} 
   providedApis:
-    - ${{values.artifact_id}}
+    - kind: OpenAPI
+      name: ${{values.artifact_id}}
+      description: OpenAPI specification for the service
+      lifecycle: experimental
+      owner: ${{values.owner | dump}}

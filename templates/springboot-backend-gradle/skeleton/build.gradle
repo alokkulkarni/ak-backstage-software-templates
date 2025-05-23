@@ -23,7 +23,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    pitest 'org.example.pit.plugins:pitest-custom-plugin:0.42'
+    // pitest 'org.example.pit.plugins:pitest-custom-plugin:0.42'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     
@@ -70,14 +70,14 @@ jacocoTestCoverageVerification {
     }
 }
 
-sonar {
+sonarqube {
     properties {
         property "sonar.projectKey", 'alokkulkarni_paymentsapi'
         property "sonar.projectName", 'paymentsapi'
-        property "sonar.scm.disabled", "true"
-        property "sonar.jacoco.reportPaths", "${project.buildDir}/customJacocoReportDir/jacocoTestReport.xml"
-        property "sonar.host.url", ${secrets.SONAR_HOST_URL}
-        property "sonar.token", ${secrets.SONAR_TOKEN}
+        // property "sonar.scm.disabled", "true"
+        // property "sonar.jacoco.reportPaths", "${project.buildDir}/customJacocoReportDir/jacocoTestReport.xml"
+        // property "sonar.host.url", ${secrets.SONAR_HOST_URL}
+        // property "sonar.token", ${secrets.SONAR_TOKEN}
     }
 }
 

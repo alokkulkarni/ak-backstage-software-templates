@@ -1,16 +1,16 @@
 pipeline {
     agent any
     environment {
-        DOCKER_REGISTRY = 'https://hub.docker.com/${{values.destination.owner}}'  // Replace with your registry
-        IMAGE_NAME = '${{values.artifact_id}}'
+        DOCKER_REGISTRY = 'https://hub.docker.com/alokkulkarni'  // Replace with your registry
+        IMAGE_NAME = 'paymentsapi'
         IMAGE_TAG = "${BUILD_NUMBER}"
-        // SONAR_PROJECT_KEY = '${{values.artifact_id}}'
+        // SONAR_PROJECT_KEY = 'paymentsapi'
         // AWS_REGION = 'eu-west-2'  // Adjust as needed
-        // S3_BUCKET = '${{values.artifact_id}}'  // Replace with your S3 bucket
+        // S3_BUCKET = 'paymentsapi'  // Replace with your S3 bucket
         // KUBECONFIG = credentials('eks-kubeconfig')  // Jenkins credential ID for kubeconfig
         // SCAN_S3_BUCKET = 'your-security-reports-bucket'  // Add this line
-        GITHUB_REPO = '${{values.destination.owner}}/${{values.artifact_id}}'  // Replace with your GitHub org/repo
-        GITHUB_BRANCH = 'master'  // Replace with your default branch
+        GITHUB_REPO = 'alokkulkarni/paymentsapi'  // Replace with your GitHub org/repo
+        GITHUB_BRANCH = 'main'  // Replace with your default branch
     }
     tools {
         jdk 'JDK 17'  // Make sure this matches your Jenkins tool configuration
@@ -23,7 +23,7 @@ pipeline {
                     branches: [[name: "*/${GITHUB_BRANCH}"]],
                     extensions: [],
                     userRemoteConfigs: [[
-                        credentialsId: 'github-app',
+                        credentialsId: 'jenkinsgithubappak',
                         url: "https://github.com/alokkulkarni/paymentsapi.git"
                     ]]
                 ])
@@ -35,25 +35,25 @@ pipeline {
                 sh './gradlew clean build -x test'
             }
         }
-        // stage('Test') {
-        //     steps {
-        //         script {
-        //             def workspace = pwd()
-        //             sh """
-        //                 cd ${workspace}
-        //                 ./gradlew test jacocoTestReport
-        //                 ./gradlew pitest
-        //             """
-        //             junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
-        //             jacoco(
-        //                 execPattern: "${workspace}/build/jacoco/test.exec",
-        //                 classPattern: "${workspace}/build/classes/java/main",
-        //                 sourcePattern: "${workspace}/src/main/java",
-        //                 exclusionPattern: "${workspace}/src/test/*"
-        //             )
-        //         }
-        //     }
-        // }
+        stage('Test') {
+            steps {
+                script {
+                    def workspace = pwd()
+                    sh """
+                        cd ${workspace}
+                        ./gradlew test jacocoTestReport
+                        ./gradlew pitest
+                    """
+                    junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
+                    jacoco(
+                        execPattern: "**/*.exec",
+                        classPattern: "**/*main*",
+                        sourcePattern: "**/*.java",
+                        exclusionPattern: "**/*Test*"
+                    )
+                }
+            }
+        }
         stage('Generate SBOM') {
             steps {
                 script {
@@ -62,7 +62,7 @@ pipeline {
                         cd ${workspace}
                         ./gradlew cyclonedxBom
                         mkdir -p sbom-artifacts
-                        cp build/sbom/* sbom-artifacts/
+                        cp sbom/* sbom-artifacts/
                     """
                     archiveArtifacts artifacts: 'sbom-artifacts/*', fingerprint: true
                 }
@@ -72,35 +72,18 @@ pipeline {
             steps {
                 // Use Grype or other tool to scan SBOM for vulnerabilities
                 grypeScan autoInstall: true, repName: 'grypeReport_${JOB_NAME}_${BUILD_NUMBER}.txt', scanDest: 'dir:sbom-artifacts'
-                // sh '''
-                //     if command -v grype &> /dev/null; then
-                //       echo "Scanning dependencies for vulnerabilities..."
-                //       mkdir -p vulnerability-reports
-                //       grype dir:sbom-artifacts -o json > vulnerability-reports/grype-report.json
-                //       grype dir:sbom-artifacts -o table > vulnerability-reports/grype-report.txt
-                //     else
-                //       echo "Grype not available, skipping vulnerability scan"
-                //       mkdir -p vulnerability-reports
-                //       echo "Vulnerability scan skipped - Grype not installed" > vulnerability-reports/scan-skipped.txt
-                //     fi
-                // '''
-                // Archive vulnerability reports
-                archiveArtifacts artifacts: 'vulnerability-reports/*', fingerprint: true
+                archiveArtifacts artifacts: '*', fingerprint: true
             }
         }
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('SonarQube') {
-        //             sh """
-        //                 ./gradlew sonar \
-        //                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-        //                 -Dsonar.java.binaries=build/classes/java/main \
-        //                 -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml \
-        //                 -Dsonar.pitest.reportsDirectory=build/reports/pitest
-        //             """
-        //         }
-        //     }
-        // }
+        stage('SonarQube Analysis') {
+            steps {
+                 withSonarQubeEnv('sonarqubeak') {
+                    sh """
+                        ./gradlew sonar -Dsonar.host.url="http://192.168.1.174:9000" -Dsonar.projectKey=alokkulkarni_paymentsapi -Dsonar.jacocoPath="**/build/test-results/test/*.xml"
+                    """
+                }
+            }
+        }
         // stage('Export Reports to S3') {
         //     steps {
         //         withAWS(region: "${AWS_REGION}", credentials: 'aws-credentials') {  // Configure AWS credentials in Jenkins
@@ -117,39 +100,39 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("${DOCKER_REGISTRY}", 'docker-credentials') {  // Configure Docker credentials in Jenkins
+                    docker.withRegistry("${DOCKER_REGISTRY}", 'docker-credential') {  // Configure Docker credentials in Jenkins
                         def customImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}")
                         // Add SBOM attestation to the image if cosign is available
-                        sh '''
-                            if command -v cosign &> /dev/null; then
-                              echo "Attaching SBOM attestation to image..."
-                              cosign attach sbom --sbom sbom-artifacts/bom.json ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
-                            else
-                              echo "Cosign not available, skipping SBOM attestation"
-                            fi
-                        '''
+                        // sh '''
+                        //     if command -v cosign &> /dev/null; then
+                        //       echo "Attaching SBOM attestation to image..."
+                        //       cosign attach sbom --sbom sbom-artifacts/bom.json ${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+                        //     else
+                        //       echo "Cosign not available, skipping SBOM attestation"
+                        //     fi
+                        // '''
                         customImage.push()
                         customImage.push('latest')
                     }
                 }
             }
         }
-        stage('Container Security Scan') {
-            steps {
-                script {
-                    def workspace = pwd()
-                    def scanScript = "${workspace}/scripts/container-scan.sh"
-                    sh """
-                        cd ${workspace}
-                        ${scanScript} -i "${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}" \
-                                    -b "${SCAN_S3_BUCKET}" \
-                                    -f "json" \
-                                    -s "HIGH,CRITICAL" \
-                                    -R "${AWS_REGION}"
-                    """
-                }
-            }
-        }
+        // stage('Container Security Scan') {
+        //     steps {
+        //         script {
+        //             def workspace = pwd()
+        //             def scanScript = "${workspace}/scripts/container-scan.sh"
+        //             sh """
+        //                 cd ${workspace}
+        //                 ${scanScript} -i "${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}" \
+        //                             -b "${SCAN_S3_BUCKET}" \
+        //                             -f "json" \
+        //                             -s "HIGH,CRITICAL" \
+        //                             -R "${AWS_REGION}"
+        //             """
+        //         }
+        //     }
+        // }
         // stage('Deploy to EKS') {
         //     steps {
         //         script {
@@ -157,13 +140,13 @@ pipeline {
         //             withKubeConfig([credentialsId: 'eks-kubeconfig']) {
         //                 sh """
         //                     cd ${workspace}
-        //                     helm upgrade --install ${{values.artifact_id}} helm/${{values.artifact_id}} \
+        //                     helm upgrade --install paymentsapi helm/paymentsapi \
         //                         --namespace dev \
         //                         --create-namespace \
         //                         --set image.repository=${DOCKER_REGISTRY}/${IMAGE_NAME} \
         //                         --set image.tag=${IMAGE_TAG} \
         //                         --set sbom.enabled=true \
-        //                         -f helm/${{values.artifact_id}}/values-dev.yaml
+        //                         -f helm/paymentsapi/values-dev.yaml
         //                 """
         //             }
         //         }
