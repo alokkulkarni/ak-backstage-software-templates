@@ -201,7 +201,7 @@ spec:
       input:
         allowedHosts: ["github.com"]
         description: ${{ parameters.description }}
-        repoUrl: ${{ parameters.repoName }}
+        repoUrl: github.com?owner=${{ parameters.owner }}&repo=${{ parameters.repoName }}
         repoVisibility: public
         commitMessage: Add Spring Boot backend Service
         defaultBranch: main

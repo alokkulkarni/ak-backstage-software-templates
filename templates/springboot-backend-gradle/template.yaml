@@ -125,7 +125,7 @@ spec:
       input:
         allowedHosts: ["github.com"]
         description: This is ${{ parameters.component_id }}
-        repoUrl: github.com?owner=${{ parameters.owner }}&repo=${{ parameters.artifact_id }}
+        repoUrl: ${{ parameters.repoUrl }}
         repoVisibility: public
         commitMessage: Add Spring Boot Gradle Service
         defaultBranch: main
