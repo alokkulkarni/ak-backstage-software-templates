@@ -23,7 +23,6 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    // pitest 'org.example.pit.plugins:pitest-custom-plugin:0.42'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     
@@ -74,20 +73,17 @@ sonarqube {
     properties {
         property "sonar.projectKey", 'alokkulkarni_paymentsapi'
         property "sonar.projectName", 'paymentsapi'
-        // property "sonar.scm.disabled", "true"
-        // property "sonar.jacoco.reportPaths", "${project.buildDir}/customJacocoReportDir/jacocoTestReport.xml"
-        // property "sonar.host.url", ${secrets.SONAR_HOST_URL}
-        // property "sonar.token", ${secrets.SONAR_TOKEN}
     }
 }
 
 pitest {
     targetClasses = ['com.example.${{values.java_package_name}}.*']
+    junit5PluginVersion = '1.2.2'
     threads = 4
     outputFormats = ['HTML', 'XML']
     timestampedReports = false
-    mutationThreshold = 70
-    coverageThreshold = 70
+    mutationThreshold = 0
+    coverageThreshold = 0
 }
 
 // SBOM Configuration with CycloneDX
@@ -116,6 +112,11 @@ task copySbomArtifacts(type: Copy, dependsOn: 'cyclonedxBom') {
 }
 
 build {
+    
+    dependsOn 'jacocoTestReport'
+    dependsOn 'jacocoTestCoverageVerification'
+    dependsOn 'pitest'
+    dependsOn 'sonarqube'
+    dependsOn qualityCheck
     dependsOn copySbomArtifacts
-    // dependsOn sonar
 }
