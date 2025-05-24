@@ -195,7 +195,7 @@ spec:
           javaPackageName: ${{ parameters.javaPackageName }}
           sourceControl: github.com
     
-    id: publish
+    - id: publish
       name: Publish Repository
       action: publish:github
       input:
