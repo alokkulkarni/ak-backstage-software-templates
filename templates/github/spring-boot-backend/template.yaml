@@ -194,14 +194,16 @@ spec:
           artifactId: ${{ parameters.artifactId }}
           javaPackageName: ${{ parameters.javaPackageName }}
           sourceControl: github.com
-
-    - id: publish
-      name: Publishing to the Source Code Repository
+    
+    id: publish
+      name: Publish Repository
       action: publish:github
       input:
-        allowedHosts: ['github.com']
+        allowedHosts: ["github.com"]
         description: ${{ parameters.description }}
-        repoUrl: github.com?owner=${{ parameters.orgName }}&repo=${{ parameters.repoName }}
+        repoUrl: ${{ parameters.repoName }}
+        repoVisibility: public
+        commitMessage: Add Spring Boot backend Service
         defaultBranch: main
 
     - id: register
