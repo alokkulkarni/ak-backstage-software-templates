@@ -46,7 +46,7 @@ spec:
           title: Service Port
           type: number
           description: Port on which the service will run
-          default: 8080
+          default: 8585
         java_version:
           title: Java Version
           type: string
