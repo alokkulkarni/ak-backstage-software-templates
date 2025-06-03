@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: Spring Boot Gradle Demo API
+  description: |-
+    This is the API documentation for the Spring Boot Gradle application, providing health and information endpoints.
+    
+    ## Endpoints
+    
+    - /api/health - Health check endpoint
+    - /api/info - Application information
+    - Actuator endpoints (/actuator/*)
+    
+    ## Features
+    
+    - Spring Boot 3.4.5
+    - Gradle build system
+    - JUnit5 with JaCoCo and PIT for testing
+    - Software Bill of Materials (SBOM) generation
+    - Spring Actuator for monitoring
+  version: 0.0.1-SNAPSHOT
+  contact:
+    name: API Support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+externalDocs:
+  description: Additional documentation
+  url: https://example.com/docs
+servers:
+  - url: http://localhost:8585
+    description: Local development server
+tags:
+  - name: health
+    description: Health and information endpoints
+  - name: monitoring
+    description: Actuator monitoring endpoints
+paths:
+  /api/health:
+    get:
+      tags:
+        - health
+      summary: Application health check
+      description: Returns the health status of the application
+      operationId: getHealth
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /api/info:
+    get:
+      tags:
+        - health
+      summary: Application information
+      description: Returns detailed information about the application
+      operationId: getInfo
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+  /actuator/health:
+    get:
+      tags:
+        - monitoring
+      summary: Spring Actuator health
+      description: Spring Actuator health endpoint with detailed system health status
+      operationId: getActuatorHealth
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+  /actuator/info:
+    get:
+      tags:
+        - monitoring
+      summary: Spring Actuator info
+      description: Spring Actuator info endpoint with build and git information
+      operationId: getActuatorInfo
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+  /actuator/metrics:
+    get:
+      tags:
+        - monitoring
+      summary: Spring Actuator metrics
+      description: Spring Actuator metrics endpoint with available metrics
+      operationId: getActuatorMetrics
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+  /actuator/prometheus:
+    get:
+      tags:
+        - monitoring
+      summary: Spring Actuator prometheus
+      description: Spring Actuator prometheus endpoint for metrics scraping
+      operationId: getActuatorPrometheus
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "UP"
+          description: The status of the application
+      required:
+        - status
+    InfoResponse:
+      type: object
+      properties:
+        app:
+          type: string
+          example: "Spring Demo Gradle"
+          description: The name of the application
+        version:
+          type: string
+          example: "0.0.1-SNAPSHOT"
+          description: The version of the application
+        buildType:
+          type: string
+          example: "Gradle"
+          description: The build system used
+        features:
+          type: object
+          properties:
+            sbom:
+              type: string
+              example: "enabled"
+              description: Software Bill of Materials status
+            actuator:
+              type: string
+              example: "enabled"
+              description: Spring Actuator status
+            testing:
+              type: string
+              example: "JUnit5 + JaCoCo + PIT"
+              description: Testing frameworks used
+      required:
+        - app
+        - version
+        - buildType
+        - features

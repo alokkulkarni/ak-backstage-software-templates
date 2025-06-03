@@ -1,3 +1,4 @@
+// filepath: /Users/alokkulkarni/Documents/Development/platformengineering/ak-backstage-software-templates/templates/springboot-backend-gradle/skeleton/src/main/java/com/example/${{values.java_package_name}}/controller/HealthController.java
 package com.example.${{values.java_package_name}}.controller;
 
 import io.swagger.v3.oas.annotations.Operation;

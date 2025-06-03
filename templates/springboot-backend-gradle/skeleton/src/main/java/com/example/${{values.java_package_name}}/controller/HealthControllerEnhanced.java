@@ -1,5 +1,7 @@
 package com.example.${{values.java_package_name}}.controller;
 
+import com.example.${{values.java_package_name}}.model.HealthResponse;
+import com.example.${{values.java_package_name}}.model.InfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,17 +14,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enhanced Health Controller using model classes and OpenAPI annotations
+ * Note: This controller is an alternative to the basic HealthController
+ * and can be used to replace it when ready.
+ */
 @RestController
-@RequestMapping("/api")
-@Tag(name = "Health", description = "Health and information endpoints")
-public class HealthController {
+@RequestMapping("/api/v2")
+@Tag(name = "Health API (v2)", description = "Enhanced health and information endpoints with proper models")
+public class HealthControllerEnhanced {
 
     @Operation(
         summary = "Get application health status", 
-        description = "Returns the current health status of the application"
+        description = "Returns the current health status of the application with timestamp"
     )
     @ApiResponses(value = {
         @ApiResponse(
@@ -30,15 +38,18 @@ public class HealthController {
             description = "Application is healthy", 
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Map.class)
+                schema = @Schema(implementation = HealthResponse.class)
             )
         )
     })
     @GetMapping("/health")
-    public ResponseEntity<Map<String, String>> health() {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "UP");
-        return ResponseEntity.ok(response);
+    public ResponseEntity<HealthResponse> health() {
+        return ResponseEntity.ok(
+            HealthResponse.builder()
+                .status("UP")
+                .timestamp(LocalDateTime.now())
+                .build()
+        );
     }
 
     @Operation(
@@ -51,24 +62,25 @@ public class HealthController {
             description = "Application information retrieved successfully", 
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Map.class)
+                schema = @Schema(implementation = InfoResponse.class)
             )
         )
     })
     @GetMapping("/info")
-    public ResponseEntity<Map<String, Object>> info() {
-        Map<String, Object> response = new HashMap<>();
-        response.put("app", "Spring Demo Gradle");
-        response.put("version", "0.0.1-SNAPSHOT");
-        response.put("buildType", "Gradle");
-        
+    public ResponseEntity<InfoResponse> info() {
         Map<String, String> features = new HashMap<>();
         features.put("sbom", "enabled");
         features.put("actuator", "enabled");
         features.put("testing", "JUnit5 + JaCoCo + PIT");
+        features.put("openapi", "enabled");
         
-        response.put("features", features);
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+            InfoResponse.builder()
+                .app("Spring Demo Gradle")
+                .version("0.0.1-SNAPSHOT")
+                .buildType("Gradle")
+                .features(features)
+                .build()
+        );
     }
 }

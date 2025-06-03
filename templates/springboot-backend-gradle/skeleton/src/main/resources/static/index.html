@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot API Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 30px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .endpoint {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            border-radius: 0 5px 5px 0;
+        }
+        .response {
+            margin-top: 10px;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spring Boot API Demo</h1>
+        
+        <p>This page demonstrates the REST API endpoints available in this Spring Boot application. Click the buttons below to make API calls and see the responses.</p>
+        
+        <h2>Health Endpoints</h2>
+        
+        <div class="endpoint">
+            <h3>Basic Health Status</h3>
+            <button onclick="callApi('/api/health')">GET /api/health</button>
+            <pre id="health-response" class="response">Response will appear here...</pre>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Enhanced Health Status</h3>
+            <button onclick="callApi('/api/v2/health')">GET /api/v2/health</button>
+            <pre id="health-v2-response" class="response">Response will appear here...</pre>
+        </div>
+        
+        <h2>Info Endpoints</h2>
+        
+        <div class="endpoint">
+            <h3>Basic Application Info</h3>
+            <button onclick="callApi('/api/info')">GET /api/info</button>
+            <pre id="info-response" class="response">Response will appear here...</pre>
+        </div>
+        
+        <div class="endpoint">
+            <h3>Enhanced Application Info</h3>
+            <button onclick="callApi('/api/v2/info')">GET /api/v2/info</button>
+            <pre id="info-v2-response" class="response">Response will appear here...</pre>
+        </div>
+        
+        <h2>API Documentation</h2>
+        
+        <div class="endpoint">
+            <h3>OpenAPI Documentation</h3>
+            <a href="/swagger-ui.html" target="_blank"><button>Open Swagger UI</button></a>
+            <a href="/api-docs" target="_blank"><button>OpenAPI JSON</button></a>
+            <a href="/api-docs.yaml" target="_blank"><button>OpenAPI YAML</button></a>
+        </div>
+    </div>
+
+    <script>
+        async function callApi(endpoint) {
+            // Determine which response element to update
+            let responseElementId;
+            switch(endpoint) {
+                case '/api/health':
+                    responseElementId = 'health-response';
+                    break;
+                case '/api/v2/health':
+                    responseElementId = 'health-v2-response';
+                    break;
+                case '/api/info':
+                    responseElementId = 'info-response';
+                    break;
+                case '/api/v2/info':
+                    responseElementId = 'info-v2-response';
+                    break;
+                default:
+                    responseElementId = 'health-response';
+            }
+            
+            const responseElement = document.getElementById(responseElementId);
+            responseElement.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

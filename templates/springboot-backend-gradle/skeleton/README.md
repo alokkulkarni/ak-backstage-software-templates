@@ -15,10 +15,14 @@ This is a sample Spring Boot application configured to use Gradle build system, 
 - `src/main/java` - Java source code
   - `Application.java` - Main application class
   - `controller/HealthController.java` - REST endpoints
+  - `config/OpenApiConfig.java` - OpenAPI configuration
 - `src/main/resources`
   - `application.yml` - Application configuration
+  - `static/openapi.yaml` - OpenAPI specification
 - `k8s/` - Kubernetes deployment configurations
 - `Dockerfile` - Container image definition
+- `docs/` - Application documentation
+  - `openapi.md` - API documentation
 - `deploy.sh` - Deployment script
 - `build.gradle` - Gradle build file with SBOM generation and testing
 
@@ -32,11 +36,18 @@ This is a sample Spring Boot application configured to use Gradle build system, 
 - Docker container with embedded SBOM for supply chain security
 - Kubernetes and Helm deployment configurations
 - Jenkins CI/CD pipeline integration
+- OpenAPI documentation with Swagger UI
+- Model-driven API design with proper schema definitions
 
 ## Available Endpoints
 
 - `GET /api/health` - Health check endpoint
 - `GET /api/info` - Application information endpoint
+- `GET /api/v2/health` - Enhanced health check endpoint with timestamp
+- `GET /api/v2/info` - Enhanced information endpoint with structured response
+- `GET /swagger-ui.html` - Swagger UI for API documentation
+- `GET /api-docs` - OpenAPI specification in JSON format
+- `GET /api-docs.yaml` - OpenAPI specification in YAML format
 
 ## Build and Deploy
 
@@ -44,6 +55,27 @@ This is a sample Spring Boot application configured to use Gradle build system, 
    ```bash
    chmod +x deploy.sh
    ```
+
+## API Documentation
+
+This application includes comprehensive API documentation using OpenAPI (Swagger).
+
+1. Run the application:
+   ```bash
+   ./gradlew bootRun
+   ```
+
+2. Access the Swagger UI:
+   ```
+   http://localhost:8585/swagger-ui.html
+   ```
+
+3. Or use the convenience script:
+   ```bash
+   ./openapi-view.sh
+   ```
+
+For more information, see the [API documentation guide](docs/openapi-quickstart.md).
 
 2. Run the deployment script:
    ```bash

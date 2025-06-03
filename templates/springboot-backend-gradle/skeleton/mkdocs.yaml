@@ -3,6 +3,9 @@ site_description: ${{values.description | dump}}
 
 nav:
   - Introduction: index.md
+  - API Documentation: 
+    - Overview: openapi.md
+    - Quick Start Guide: openapi-quickstart.md
 
 plugins:
   - techdocs-core
