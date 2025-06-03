@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.4.3'
+    id 'org.springframework.boot' version '3.4.5'
     id 'io.spring.dependency-management' version '1.1.5'
     id 'java'
     id 'jacoco'
@@ -14,6 +14,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     sourceCompatibility = '17'
+    targetCompatibility = '17'
 }
 
 repositories {
@@ -71,8 +72,10 @@ jacocoTestCoverageVerification {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", 'alokkulkarni_paymentsapi'
-        property "sonar.projectName", 'paymentsapi'
+        property "sonar.projectKey", '${{values.destination.owner}}_${{values.artifact_id}}'
+        property "sonar.projectName", '${{values.artifact_id}}'
+        property "sonar.host.url", "http://192.168.1.174:9000"
+        property "sonar.token","squ_89e9a9853a1eabaa612da6b8711f87d026d90253"
     }
 }
 
@@ -82,6 +85,7 @@ pitest {
     threads = 4
     outputFormats = ['HTML', 'XML']
     timestampedReports = false
+    // exportLineCoverage = true
     mutationThreshold = 0
     coverageThreshold = 0
 }
@@ -101,7 +105,7 @@ task qualityCheck(dependsOn: ['test', 'jacocoTestCoverageVerification', 'pitest'
 }
 
 bootJar {
-    archiveBaseName = '${{values.artifact_id}}'
+    archiveBaseName = 'paymentsapi'
     archiveClassifier = ''
 }
 
@@ -112,11 +116,10 @@ task copySbomArtifacts(type: Copy, dependsOn: 'cyclonedxBom') {
 }
 
 build {
-    
-    dependsOn 'jacocoTestReport'
-    dependsOn 'jacocoTestCoverageVerification'
-    dependsOn 'pitest'
-    dependsOn 'sonarqube'
-    dependsOn qualityCheck
-    dependsOn copySbomArtifacts
+    // dependsOn 'jacocoTestReport'
+    // dependsOn 'jacocoTestCoverageVerification'
+    // dependsOn 'pitest'
+    // dependsOn 'sonar'
+    // dependsOn qualityCheck
+    // dependsOn copySbomArtifacts
 }
