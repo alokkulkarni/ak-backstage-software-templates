@@ -26,9 +26,9 @@ spec:
   dependencyOf:
     - component:${{values.owner + "/" + values.java_package_name}}
   providesApis:
-    - kind: OpenAPI 
+    - "api:info:health"
   providedApis:
-    - paymentsapi
+    - ${{values.org_owner + "/" + values.artifact_id + ":info:health"}}
   dependsOn:
     - resource:default/artists-db
   definition: |
