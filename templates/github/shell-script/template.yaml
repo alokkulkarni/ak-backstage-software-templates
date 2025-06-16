@@ -1,0 +1,31 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: argocd-template
+  title: Add ArgoCD to an existing project
+  description: Add ArgoCD to an existing project
+  tags:
+    - recommended
+    - argocd
+spec:
+  owner: ak
+  system: ak-idp
+  type: service
+
+  steps:
+  - id: hello-world
+    name: Hello World
+    action: shell:execute
+    input:
+      script: |
+        echo "Hello, World!"
+        echo "Current directory: $(pwd)"
+        echo "Current user: $(whoami)"
+
+  output:
+    links:
+      - title: Open the Source Code Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open the Catalog Info Component
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

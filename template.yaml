@@ -12,6 +12,7 @@ spec:
     - templates/github/spring-boot-backend/template.yaml
     - templates/github/quarkus-backend/template.yaml
     - templates/github/argocd/template.yaml
+    - templates/github/shell-script/template.yaml
     - templates/github/launch-ansible-job/template.yaml
     - templates/github/define-ansible-job/template.yaml
     - templates/github/register-component/template.yaml
