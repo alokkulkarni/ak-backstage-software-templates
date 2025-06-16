@@ -1,12 +1,12 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: argocd-template
-  title: Add ArgoCD to an existing project
-  description: Add ArgoCD to an existing project
+  name: shell-script-template
+  title: Add shellscript as a scaffolder action to any template
+  description: Add shell script to an existing project
   tags:
     - recommended
-    - argocd
+    - shell-script
 spec:
   owner: ak
   system: ak-idp
@@ -24,8 +24,5 @@ spec:
 
   output:
     links:
-      - title: Open the Source Code Repository
-        url: ${{ steps.publish.output.remoteUrl }}
-      - title: Open the Catalog Info Component
-        icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+      - title: shell-script-output
+        url: ${{ steps.hello-world.output.stdout }}
