@@ -8,9 +8,10 @@ metadata:
     backstage.io/kubernetes-id: ${{values.artifact_id}}}
 spec:
   ports:
-    - name: http-8086
-      port: 8086
+    - name: http-8585
+      port: 8585
       protocol: TCP
-      targetPort: 8086
+      targetPort: 8585
   selector:
     app: ${{values.artifact_id}}
+  type: NodePort

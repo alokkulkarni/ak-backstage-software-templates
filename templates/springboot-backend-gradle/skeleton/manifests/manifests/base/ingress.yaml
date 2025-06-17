@@ -17,4 +17,4 @@ spec:
             service:
               name: ${{values.artifact_id}}
               port:
-                number: 8086
+                number: 8585

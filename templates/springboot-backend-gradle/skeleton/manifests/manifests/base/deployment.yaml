@@ -18,8 +18,8 @@ spec:
         - name: ${{values.artifact_id}}
           image: ${{values.org_owner}}/${{values.artifact_id}}:latest
           ports:
-            - name: http-8086
-              containerPort: 8086
+            - name: http-8585
+              containerPort: 8585
               protocol: TCP
           resources:
             limits:
