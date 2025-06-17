@@ -30,7 +30,7 @@ spec:
   providedApis:
     - ${{values.org_owner + "/" + values.artifact_id + ":info:health"}}
   dependsOn:
-    - resource:default/artists-db
+    - resource:default/${{values.package_name + "DB"}}
   definition: |
     openapi: 3.0.3
     info:
