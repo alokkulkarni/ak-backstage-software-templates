@@ -1,15 +1,10 @@
 package com.example.${{values.java_package_name}}.config;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
 
 /**
  * Configuration class to document Spring Boot Actuator endpoints in OpenAPI.
@@ -68,10 +63,10 @@ public class ActuatorEndpointsDocumentation {
             )
         )
     })
-    @Bean
-    public RouterFunction<ServerResponse> actuatorDocumentationRouterFunction() {
-        // This is just a placeholder to document the Actuator endpoints
-        // The actual implementation is provided by Spring Boot Actuator
-        return RouterFunctions.route().build();
+    public void actuatorEndpointsDocumentation() {
+        // This method is intentionally left empty.
+        // It serves to register the actuator endpoints documentation with SpringDoc.
+        
     }
 }
+

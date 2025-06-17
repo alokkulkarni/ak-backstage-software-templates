@@ -99,7 +99,6 @@ pipeline {
                     grype sbom:${sbomFile} -o json --add-cpes-if-none > ${reportFile}
 
                     echo "Grype scan complete. Report saved as ${reportFile}"
-                    archiveArtifacts artifacts: '*', fingerprint: true
                     """
                 }
             }
