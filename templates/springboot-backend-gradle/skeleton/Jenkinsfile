@@ -7,7 +7,7 @@ pipeline {
         IMAGE_NAME = '${{values.artifact_id}}'
         IMAGE_TAG = "${BUILD_NUMBER}"
         SONAR_PROJECT_KEY = '${{values.destination.owner}}_${{values.artifact_id}}'
-        SONAR_HOST_URL = 'http://192.168.86.243:9000'
+        SONAR_HOST_URL = 'http://192.168.86.28:9000'
         AWS_REGION = 'eu-west-2'  // Adjust as needed
         S3_BUCKET = '${{values.artifact_id}}'  // Replace with your S3 bucket
         // KUBECONFIG = credentials('eks-kubeconfig')  // Jenkins credential ID for kubeconfig

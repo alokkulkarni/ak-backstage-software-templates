@@ -129,6 +129,18 @@ spec:
         repoVisibility: public
         commitMessage: Add Spring Boot Gradle Service
         defaultBranch: main
+    
+    - id: jenkins-jobs
+      name: Create Jenkins Jobs
+      action: jenkins:create-job
+      input:
+        artifactId: ${{ parameters.artifact_id }}
+        skeletonPath: ./skeleton
+        description: ${{ parameters.description }}
+        parameters:
+          DOCKER_REGISTRY: 'https://hub.docker.com/repositories/${{values.destination.owner}}'
+          GIT_REPO_URL: ${{ steps.publish.output.remoteUrl }}
+          SONAR_PROJECT_KEY: '${{parameters.org_owner}}_${{parameters.artifact_id}}'
 
     - id: register
       name: Register in Backstage Catalog
