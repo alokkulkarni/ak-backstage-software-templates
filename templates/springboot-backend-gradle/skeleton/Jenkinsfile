@@ -105,7 +105,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                 withSonarQubeEnv('sonarToken') {
+                 withSonarQubeEnv('sonarqubeak') {
                     sh """
                         bash ./gradlew sonar -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.jacocoPath="**/build/test-results/test/*.xml"
                     """
