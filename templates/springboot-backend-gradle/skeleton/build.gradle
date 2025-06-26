@@ -75,7 +75,7 @@ sonarqube {
     properties {
         property "sonar.projectKey", '${{values.destination.owner}}_${{values.artifact_id}}'
         property "sonar.projectName", '${{values.artifact_id}}'
-        property "sonar.host.url", "http://192.168.1.174:9000"
+        property "sonar.host.url", "http://192.168.1.137:9000"
         property "sonar.token","squ_89e9a9853a1eabaa612da6b8711f87d026d90253"
     }
 }

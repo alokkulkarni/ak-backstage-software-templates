@@ -1,5 +1,10 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: ${{values.artifact_id}}
+  name: ${{values.package_name}}
+  labels:
+    app: ${{values.artifact_id}}
+    app.kubernetes.io/component: backstage
+    backstage.io/kubernetes-id: ${{values.artifact_id}}
+    backstage.io/kubernetes-namespace: ${{values.package_name}}
   
