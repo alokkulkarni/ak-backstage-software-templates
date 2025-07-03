@@ -49,10 +49,25 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Docker Image
+       - name: Build amd64
         run: |
-          docker build -t ${{values.org_owner}}/${{values.artifact_id}}:latest .
-
-      - name: Push Docker Image
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{values.org_owner}}/${{values.artifact_id}}:amd64 \
+            .
+      - name: Build arm64
         run: |
-          docker push ${{values.org_owner}}/${{values.artifact_id}}:latest
+          docker buildx build \
+            --platform linux/arm64 \
+            -t ${{values.org_owner}}/${{values.artifact_id}}:arm64 \
+            .
+      - name: Push both images
+        run: |
+          docker push ${{values.org_owner}}/${{values.artifact_id}}:amd64
+          docker push ${{values.org_owner}}/${{values.artifact_id}}:arm64
+      - name: Create and push manifest
+        run: |
+          docker manifest create ${{values.org_owner}}/${{values.artifact_id}}:latest \
+            --amend ${{values.org_owner}}/${{values.artifact_id}}:amd64 \
+            --amend ${{values.org_owner}}/${{values.artifact_id}}:arm64
+          docker manifest push ${{values.org_owner}}/${{values.artifact_id}}:latest
