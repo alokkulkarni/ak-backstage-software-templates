@@ -145,36 +145,36 @@ spec:
         skeletonPath: ./skeleton
         description: ${{ parameters.description }}
 
-    - id: cross-platform-setup
-      name: Cross-Platform Setup
-      action: shell:execute
-      input:
-        script: |
-          argocd login $ARGOCD_SERVER --username $ARGOCD_USER --password $ARGOCD_PASSWORD --insecure
+    # - id: cross-platform-setup
+    #   name: Cross-Platform Setup
+    #   action: shell:execute
+    #   input:
+    #     script: |
+    #       argocd login $ARGOCD_SERVER --username $ARGOCD_USER --password $ARGOCD_PASSWORD --insecure
 
-          argocd app create {{ parameters.artifact_id + "_dev"}} \
-            --repo {{ steps['publish'].output.remoteUrl }} \
-            --path $MANIFEST_PATH \
-            --dest-server https://kubernetes.default.svc \
-            --dest-namespace $DESTINATION_NAMESPACE \
-            --project {{ parameters.package_name }} \
-            --sync-policy automated \
-            --self-heal \
-            --prune \
-            --insecure
+    #       argocd app create {{ parameters.artifact_id + "_dev"}} \
+    #         --repo {{ steps['publish'].output.remoteUrl }} \
+    #         --path $MANIFEST_PATH \
+    #         --dest-server https://kubernetes.default.svc \
+    #         --dest-namespace $DESTINATION_NAMESPACE \
+    #         --project {{ parameters.package_name }} \
+    #         --sync-policy automated \
+    #         --self-heal \
+    #         --prune \
+    #         --insecure
 
-          argocd app sync {{ parameters.artifact_id }} --insecure
-        environment:
-          ARGOCD_SERVER: https://192.168.86.28:30191
-          ARGOCD_USER: 'admin'
-          ARGOCD_PASSWORD: 'h15AEnIrutkhHrPj'
-          MANIFESTS_PATH: ${{ steps.fetch-code-skeleton.output.path }}/manifests/manifests/base
-          DESTINATION_REPO: ${{ steps.publish.output.remoteUrl }}
-          DESTINATION_BRANCH: main
-          DESTINATION_NAMESPACE: ${{ parameters.package_name }}
-        workingDirectory: ${{ steps.publish.output.repoContentsUrl }}
-        shell: /bin/bash
-        sudo: false
+    #       argocd app sync {{ parameters.artifact_id }} --insecure
+    #     environment:
+    #       ARGOCD_SERVER: https://192.168.86.28:30191
+    #       ARGOCD_USER: 'admin'
+    #       ARGOCD_PASSWORD: 'h15AEnIrutkhHrPj'
+    #       MANIFESTS_PATH: ${{ steps.fetch-code-skeleton.output.path }}/manifests/manifests/base
+    #       DESTINATION_REPO: ${{ steps.publish.output.remoteUrl }}
+    #       DESTINATION_BRANCH: main
+    #       DESTINATION_NAMESPACE: ${{ parameters.package_name }}
+    #     workingDirectory: ${{ steps.publish.output.repoContentsUrl }}
+    #     shell: /bin/bash
+    #     sudo: false
 
   output:
     links:
